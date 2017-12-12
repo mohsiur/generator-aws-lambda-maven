@@ -84,7 +84,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 			name 	: 'basePath',
 			message	: 'Enter the base path of your folder:',
 			default	: 'Desktop/Projects'
-		}
+		},
 		{
 			type	: 'checkbox',
 			name 	: 'awsServices',
