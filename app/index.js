@@ -128,7 +128,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		this.packageName 	= props.packageName;
 		this.baseName 		= props.baseName;
 		this.basePath		= props.basePath;
-		this.awsServices 	= prop.awsServices;
+		this.awsServices 	= props.awsServices;
 
 		var hasAwsServices = function(awsServicesStarter){
 			return props.awsServices.indexOf(awsServicesStarter) !== -1;
