@@ -74,9 +74,16 @@ lambdaGenerator.prototype.askFor = function askFor() {
 
 		{
 			type	: 'string',
+			name 	: 'applicationName',
+			message : 'Enter name of the application:',
+			default	: 'Application'
+		},
+
+		{
+			type	: 'string',
 			name   	: 'baseName',
 			message	: 'Enter base name of folder:',
-			default : 'Application'
+			default : 'MyApp-Application'
 		},
 
 		{
@@ -124,11 +131,12 @@ lambdaGenerator.prototype.askFor = function askFor() {
 	];
 
 	this.prompt(prompts, function(props){
-		this.awsVersion 	= props.awsVersion;
-		this.packageName 	= props.packageName;
-		this.baseName 		= props.baseName;
-		this.basePath		= props.basePath;
-		this.awsServices 	= props.awsServices;
+		this.awsVersion 		= props.awsVersion;
+		this.packageName 		= props.packageName;
+		this.baseName 			= props.baseName;
+		this.basePath			= props.basePath;
+		this.awsServices 		= props.awsServices;
+		this.applicationName 	= props.applicationName;
 
 		var hasAwsServices = function(awsServicesStarter){
 			return props.awsServices.indexOf(awsServicesStarter) !== -1;
@@ -148,7 +156,8 @@ lambdaGenerator.prototype.askFor = function askFor() {
 
 lambdaGenerator.prototype.app = function app() {
 	var packageFolderSplit 	= this.packageName.split('.');
-	var applicationName 	= packageFolderSplit.pop();
+	var applicationName 	= this.applicationName;
+	packageFolderSplit.pop();
 	var basePageFolder		= packageFolderSplit.join('/');
 	
 	//var packageFolder 		= this.packageName.replace(/\./g, '/');
