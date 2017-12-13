@@ -1,4 +1,4 @@
-package <%=packageName=>.utils.AmazonWebServices;
+package <%=packageName%>.utils.AmazonWebServices;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;

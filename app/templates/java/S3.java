@@ -1,4 +1,4 @@
-package <%=packageName=>.utils.AmazonWebServices;
+package <%=packageName%>.utils.AmazonWebServices;
 
 import java.io.File;
 import java.io.IOException;

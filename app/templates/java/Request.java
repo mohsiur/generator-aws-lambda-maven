@@ -1,4 +1,4 @@
-package <%=packageName=>.utils.LambdaUtils;
+package <%=packageName%>.utils.LambdaUtils;
 
 /**
  * 	Simple POJO to handle Lambda requests.		

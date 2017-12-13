@@ -1,4 +1,4 @@
-package <%=packageName=>.utils.AmazonWebServices;
+package <%=packageName%>.utils.AmazonWebServices;
 
 import java.util.ArrayList;
 import java.util.Arrays;
