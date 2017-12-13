@@ -182,7 +182,7 @@ lambdaGenerator.prototype.app = function app() {
 			this.template('java/DynamoDB.java', awsServicesDir+'/DynamoDB.java');
 			this.template('java/RegexOperations.java', operationsDir+'/RegexOperations.java');
 		}
-		if(this.cloudformation) this.template('CloudFormation.java', awsServicesDir+'/CloudFormation.java');
+		if(this.cloudformation) this.template('java/CloudFormation.java', awsServicesDir+'/CloudFormation.java');
 	}
 
 	var lambdaServiceDir = mainFolder + 'src/main/java/' + basePageFolder + '/utils/LambdaUtils';
