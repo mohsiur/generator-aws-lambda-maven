@@ -160,7 +160,7 @@ lambdaGenerator.prototype.app = function app() {
 	packageFolderSplit.pop();
 	var basePageFolder		= packageFolderSplit.join('/');
 	
-	//var packageFolder 		= this.packageName.replace(/\./g, '/');
+	var packageFolder 		= this.packageName.replace(/\./g, '/');
 	var mainFolder			= '~/' + this.basePath + '/' + this.baseName + '/';
 	var srcDir 				= mainFolder + 'src/main/java/' + basePageFolder + '/' + applicationName;
 	mkdirp(srcDir);
