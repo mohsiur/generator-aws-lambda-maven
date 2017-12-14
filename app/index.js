@@ -158,10 +158,11 @@ lambdaGenerator.prototype.app = function app() {
 	var packageFolderSplit 	= this.packageName.split('.');
 	var applicationName 	= this.applicationName;
 	packageFolderSplit.pop();
+	packageFolderSplit.shift();
 	var basePageFolder		= packageFolderSplit.join('/');
 	
 	var packageFolder 		= this.packageName.replace(/\./g, '/');
-	var mainFolder			= '~/' + this.basePath + '/' + this.baseName + '/';
+	var mainFolder			= this.basePath + '/' + this.baseName + '/';
 	var srcDir 				= mainFolder + 'src/main/java/' + basePageFolder + '/' + applicationName;
 	mkdirp(srcDir);
 
@@ -191,8 +192,8 @@ lambdaGenerator.prototype.app = function app() {
 	this.template('java/Response.java', lambdaServiceDir+'/Response.java');
 	this.template('java/Request.java', lambdaServiceDir+'/Request.java');
 
-	this.config.set('packageName', this.packageName);
-    this.config.set('packageFolder', packageFolder);
+	//this.config.set('packageName', this.packageName);
+    //this.config.set('packageFolder', packageFolder);
 };
 
-lambdaGenerator.prototype.projectfiles = function projectfiles() {};
+//lambdaGenerator.prototype.projectfiles = function projectfiles() {};

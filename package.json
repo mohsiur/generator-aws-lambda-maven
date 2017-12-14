@@ -3,10 +3,15 @@
   "version": "0.1.10",
   "description": "A Yeoman Generator Building a Lambda function with POJO request in maven",
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "aws",
+    "maven",
+    "aws java",
+    "aws s3",
+    "aws cloudformation"
   ],
-  "homepage": "https://github.com/davetownsend/generator-aws-lambda-maven",
-  "bugs": "https://github.com/davetownsend/generator-aws-lambda-maven/issues",
+  "homepage": "https://github.com/mohsiur/generator-aws-lambda-maven",
+  "bugs": "https://github.com/mohsiur/generator-aws-lambda-maven/issues",
   "author": {
     "name": "Mohsiur Rahman",
     "email": "mohsiurr@buffalo.edu",
