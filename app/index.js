@@ -152,12 +152,13 @@ lambdaGenerator.prototype.askFor = function askFor() {
 lambdaGenerator.prototype.app = function app() {
 	var packageFolderSplit 	= this.packageName.split('.');
 	var applicationName 	= this.applicationName;
-	packageFolderSplit.shift();
+	if(packageFolderSplit.contains('com'))
+		packageFolderSplit.shift();
 	var basePageFolder		= packageFolderSplit.join('/');
 	
 	//var packageFolder 		= this.packageName.replace(/\./g, '/');
 	//var mainFolder			= this.basePath + '/' + this.baseName + '/';
-	var srcDir 				= 'src/main/java/' + basePageFolder;
+	var srcDir 				= baseName +'src/main/java/' + basePageFolder;
 	mkdirp(srcDir);
 
 	// Set pom.xml file
