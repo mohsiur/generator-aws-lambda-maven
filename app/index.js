@@ -158,7 +158,7 @@ lambdaGenerator.prototype.app = function app() {
 	
 	//var packageFolder 		= this.packageName.replace(/\./g, '/');
 	//var mainFolder			= this.basePath + '/' + this.baseName + '/';
-	var srcDir 				= baseName +'src/main/java/' + basePageFolder;
+	var srcDir 				= this.baseName +'/src/main/java/' + basePageFolder;
 	mkdirp(srcDir);
 
 	// Set pom.xml file
