@@ -82,10 +82,10 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		{
 			type	: 'string',
 			name 	: 'baseName',
-			message : 'Enter name of the repo:',
-			default	: 'Application'
+			message : 'Enter name of the repo/folder you are in (will be the name of your jar):',
+			default	: 'OrganizationName-Repo'
 		},
-		
+
 		{
 			type	: 'checkbox',
 			name 	: 'awsServices',
@@ -127,7 +127,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 	this.prompt(prompts, function(props){
 		this.awsVersion 		= props.awsVersion;
 		this.packageName 		= props.packageName;
-	//	this.baseName 			= props.baseName;
+		this.baseName 			= props.baseName;
 	//	this.basePath			= props.basePath;
 		this.awsServices 		= props.awsServices;
 		this.applicationName 	= props.applicationName;
