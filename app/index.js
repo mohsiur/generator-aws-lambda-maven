@@ -80,6 +80,13 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		},
 
 		{
+			type	: 'string',
+			name 	: 'baseName',
+			message : 'Enter name of the repo:',
+			default	: 'Application'
+		},
+		
+		{
 			type	: 'checkbox',
 			name 	: 'awsServices',
 			message : 'Choose the AWS Services you\'d like to include:',
