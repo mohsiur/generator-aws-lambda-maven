@@ -80,19 +80,6 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		},
 
 		{
-			type	: 'string',
-			name   	: 'baseName',
-			message	: 'Enter base name of folder:',
-			default : 'MyApp-Application'
-		},
-
-		{
-			type	: 'string',
-			name 	: 'basePath',
-			message	: 'Enter the base path of your folder:',
-			default	: 'Desktop/Projects'
-		},
-		{
 			type	: 'checkbox',
 			name 	: 'awsServices',
 			message : 'Choose the AWS Services you\'d like to include:',
@@ -133,10 +120,11 @@ lambdaGenerator.prototype.askFor = function askFor() {
 	this.prompt(prompts, function(props){
 		this.awsVersion 		= props.awsVersion;
 		this.packageName 		= props.packageName;
-		this.baseName 			= props.baseName;
-		this.basePath			= props.basePath;
+	//	this.baseName 			= props.baseName;
+	//	this.basePath			= props.basePath;
 		this.awsServices 		= props.awsServices;
 		this.applicationName 	= props.applicationName;
+	//	this.folderName			= props.folderName;
 
 		var hasAwsServices = function(awsServicesStarter){
 			return props.awsServices.indexOf(awsServicesStarter) !== -1;
@@ -157,28 +145,29 @@ lambdaGenerator.prototype.askFor = function askFor() {
 lambdaGenerator.prototype.app = function app() {
 	var packageFolderSplit 	= this.packageName.split('.');
 	var applicationName 	= this.applicationName;
-	packageFolderSplit.pop();
 	packageFolderSplit.shift();
 	var basePageFolder		= packageFolderSplit.join('/');
 	
-	var packageFolder 		= this.packageName.replace(/\./g, '/');
-	var mainFolder			= this.basePath + '/' + this.baseName + '/';
-	var srcDir 				= mainFolder + 'src/main/java/' + basePageFolder + '/' + applicationName;
+	//var packageFolder 		= this.packageName.replace(/\./g, '/');
+	//var mainFolder			= this.basePath + '/' + this.baseName + '/';
+	var srcDir 				= 'src/main/java/' + basePageFolder;
 	mkdirp(srcDir);
 
 	// Set pom.xml file
-	this.template('pom.xml', mainFolder + 'pom.xml');
+	this.template('pom.xml', 'pom.xml');
 	// Set Application.java
-	this.template('java/Application.java', srcDir + "/Application.java");
+	var applicationDir = srcDir + '/' + applicationName
+	mkdirp(applicationDir)
+	this.template('java/Application.java', applicationDir + "/Application.java");
 
 	if(this.awsServices){
-		var awsServicesDir		= mainFolder + 'src/main/java/' + basePageFolder + '/utils/AmazonWebServices'; 
+		var awsServicesDir		= srcDir + '/utils/AmazonWebServices'; 
 		mkdirp(awsServicesDir);
 
 		if(this.s3) this.template('java/S3.java', awsServicesDir+'/S3.java');
 		if(this.sqs) this.template('java/SQS.java', awsServicesDir+'/SQS.java');
 		if(this.dynamodb){
-			var operationsDir = mainFolder + 'src/main/java' + basePageFolder + '/utils/Operations';
+			var operationsDir = srcDir + '/utils/Operations';
 			mkdirp(operationsDir);
 			this.template('java/DynamoDB.java', awsServicesDir+'/DynamoDB.java');
 			this.template('java/RegexOperations.java', operationsDir+'/RegexOperations.java');
@@ -186,7 +175,7 @@ lambdaGenerator.prototype.app = function app() {
 		if(this.cloudformation) this.template('java/CloudFormation.java', awsServicesDir+'/CloudFormation.java');
 	}
 
-	var lambdaServiceDir = mainFolder + 'src/main/java/' + basePageFolder + '/utils/LambdaUtils';
+	var lambdaServiceDir = srcDir + '/utils/LambdaUtils';
 	mkdirp(lambdaServiceDir);
 
 	this.template('java/Response.java', lambdaServiceDir+'/Response.java');
