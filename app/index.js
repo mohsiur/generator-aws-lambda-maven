@@ -162,7 +162,7 @@ lambdaGenerator.prototype.app = function app() {
 	mkdirp(srcDir);
 
 	// Set pom.xml file
-	this.template('pom.xml', 'pom.xml');
+	this.template('pom.xml', this.baseName + '/pom.xml');
 	// Set Application.java
 	var applicationDir = srcDir + '/' + applicationName
 	mkdirp(applicationDir)
