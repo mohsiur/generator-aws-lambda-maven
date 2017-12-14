@@ -152,7 +152,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 lambdaGenerator.prototype.app = function app() {
 	var packageFolderSplit 	= this.packageName.split('.');
 	var applicationName 	= this.applicationName;
-	if(packageFolderSplit.contains('com'))
+	if(packageFolderSplit.indexOf('com') > -1)
 		packageFolderSplit.shift();
 	var basePageFolder		= packageFolderSplit.join('/');
 	
