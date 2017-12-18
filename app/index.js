@@ -143,7 +143,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		},
 
 		{
-			type	: 'string',
+			type	: 'checkbox',
 			name 	: 'stage',
 			message : 'Choose the testing scenarios:',
 			choices : [
@@ -160,7 +160,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		},
 
 		{
-			type	: 'string',
+			type	: 'checkbox',
 			name 	: 'continuosIntegration',
 			message : 'Enter name of CI/CD platform:',
 			choices : [
@@ -297,14 +297,14 @@ lambdaGenerator.prototype.app = function app() {
 		this.template('tests/AcceptanceCaseSteps.java', srcTestDir+"/acceptance/steps/CaseSteps.java");
 		this.template('tests/RunAcceptanceTest.java', srcTestDir+"/runner/RunAcceptanceTest.java");
 		this.template('tests/TestCase.feature', this.baseName+"/src/test/resources/cucumber/TestCaseAcceptance.feature");
-		this.template('jenkins/acceptance.dsld', applicationName+"Acceptance.dsld");
+		this.template('jenkins/acceptance.dsld', this.baseName + "/" + applicationName+"Acceptance.dsld");
 	}
 
 	if(this.integration){
 		this.template('tests/IntegrationCaseSteps.java', srcTestDir+"/integration/steps/CaseSteps.java");
 		this.template('tests/RunIntegrationTest.java', srcTestDir+"/runner/RunIntegrationTest.java");
 		this.template('tests/TestCase.feature', this.baseName+"/src/test/resources/cucumber/TestCaseIntegration.feature");
-		this.template('jenkins/integration.dsld', applicationName+"Integration.dsld");
+		this.template('jenkins/integration.dsld', this.baseName + "/" + applicationName+"Integration.dsld");
 	}
 
 	console.log("A generic template has been created, please add the following files to launch into AWS, \n"
