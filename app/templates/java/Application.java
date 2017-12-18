@@ -34,6 +34,7 @@ public class <%=applicationName%> implements RequestHandler<Request, Response>
 
 	private String someFunction(String request){
 		// TODO Auto-generated method stub
+		return "Success";
 	}
 
 	
