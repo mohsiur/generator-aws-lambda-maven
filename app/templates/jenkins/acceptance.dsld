@@ -48,7 +48,7 @@ buildNo = '$BUILD_NUMBER';
  */
  
 StackDescriptor = 'stackDescriptor.json'
-Stage = '<%=acceptance%>'
+Stage = 'acceptance'
 BucketName = 'tempjars'
 Prefix = '<%=prefix%>'
 Suffix = '<%=suffix%>'

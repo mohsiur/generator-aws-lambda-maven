@@ -231,8 +231,17 @@ lambdaGenerator.prototype.askFor = function askFor() {
 			return props.continuosIntegration.indexOf(continuosIntegrationStarter) !== -1;
 		};
 
-		this.acceptance 	= hasStage('acceptance');
-		this.integration 	= hasStage('integration');
+		this.acceptance 			= hasStage('acceptance');
+		this.integration 			= hasStage('integration');
+
+
+		if(acceptance){
+			this.acceptanceStage = 'acceptance';
+		}
+		
+		if(integration){
+			this.integrationStage = 'integration';
+		}
 		
 		this.jenkins 		= hasContinuosIntegration('jenkins');
 
