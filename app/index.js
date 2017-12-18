@@ -234,15 +234,6 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		this.acceptance 			= hasStage('acceptance');
 		this.integration 			= hasStage('integration');
 
-
-		if(acceptance){
-			this.acceptanceStage = 'acceptance';
-		}
-		
-		if(integration){
-			this.integrationStage = 'integration';
-		}
-		
 		this.jenkins 		= hasContinuosIntegration('jenkins');
 
 		this.s3 			= hasAwsServices('s3');
@@ -307,6 +298,7 @@ lambdaGenerator.prototype.app = function app() {
 		this.template('tests/RunAcceptanceTest.java', srcTestDir+"/runner/RunAcceptanceTest.java");
 		this.template('tests/TestCase.feature', this.baseName+"/src/test/resources/cucumber/TestCaseAcceptance.feature");
 		this.template('jenkins/acceptance.dsld', this.baseName + "/" + applicationName+"Acceptance.dsld");
+		this.template('stackDescriptor.json', this.baseName + "/stackDescriptor.json");
 	}
 
 	if(this.integration){
@@ -314,6 +306,7 @@ lambdaGenerator.prototype.app = function app() {
 		this.template('tests/RunIntegrationTest.java', srcTestDir+"/runner/RunIntegrationTest.java");
 		this.template('tests/TestCase.feature', this.baseName+"/src/test/resources/cucumber/TestCaseIntegration.feature");
 		this.template('jenkins/integration.dsld', this.baseName + "/" + applicationName+"Integration.dsld");
+		this.template('stackDescriptor.json', this.baseName + "/integrationStackDescriptor.json");
 	}
 
 	console.log("A generic template has been created, please add the following files to launch into AWS, \n"
