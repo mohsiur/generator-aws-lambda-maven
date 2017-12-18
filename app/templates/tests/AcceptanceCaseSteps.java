@@ -1,4 +1,4 @@
-package <%=packageName%>.integration.steps;
+package <%=packageName%>.acceptance.steps;
 
 import static org.junit.Assert.assertTrue;
 

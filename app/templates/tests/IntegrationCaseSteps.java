@@ -1,4 +1,4 @@
-package <%=packageName%>.acceptance.steps;
+package <%=packageName%>.integration.steps;
 
 import static org.junit.Assert.assertTrue;
 
@@ -10,7 +10,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 
 
-public class IntegrationCaseSteps{
+public class CaseSteps{
 
 
 	@Before
