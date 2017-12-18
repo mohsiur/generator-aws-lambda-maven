@@ -1,6 +1,6 @@
 {
   "name": "generator-aws-lambda-maven",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "A Yeoman Generator Building a Lambda function with POJO request in maven",
   "keywords": [
     "yeoman-generator",
