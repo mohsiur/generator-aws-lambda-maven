@@ -267,7 +267,7 @@ lambdaGenerator.prototype.app = function app() {
 	// Set Application.java
 	var applicationDir = srcDir + '/' + applicationName
 	mkdirp(applicationDir)
-	this.template('java/Application.java', applicationDir + "/" applicationName + ".java");
+	this.template('java/Application.java', applicationDir + "/" + applicationName + ".java");
 
 	if(this.awsServices){
 		var awsServicesDir		= srcDir + '/utils/AmazonWebServices'; 
