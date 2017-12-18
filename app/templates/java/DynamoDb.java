@@ -1,7 +1,6 @@
 package <%=packageName%>.utils.AmazonWebServices;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.document.DeleteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -22,20 +20,15 @@ import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.PutItemResult;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemResult;
 
-import solutions.heavywater.Utilities.Operations.RegexOperations;
+import solutions.heavywater.utils.Operations.RegexOperations;
 
 
 public class DynamoDb 
@@ -55,6 +48,7 @@ public class DynamoDb
 	 */
 	private String tableName;
 	
+	@SuppressWarnings("deprecation")
 	public DynamoDb ()
 	{
 		//	Create a dynamo DB client.
@@ -65,6 +59,7 @@ public class DynamoDb
 	/*	 
 	 * 	Parameterized default constructor that accepts the region to build credentials.
 	 */
+	@SuppressWarnings("deprecation")
 	public DynamoDb (String region)
 	{
 		//	Create a dynamo DB client.
@@ -78,6 +73,7 @@ public class DynamoDb
 	/*	 
 	 * 	Parameterized default constructor that accepts the access id and key to build credentials.
 	 */
+	@SuppressWarnings("deprecation")
 	public DynamoDb (String swfAccessId, String swfSecretKey)
 	{
 		//	Create credentials using hte access id and key.
@@ -95,6 +91,7 @@ public class DynamoDb
 	 * 	Parameterized default constructor that accepts the access id and key along with region to build credentials.
 	 */
 	
+	@SuppressWarnings("deprecation")
 	public DynamoDb (String swfAccessId, String swfSecretKey, String region)
 	{
 		//	Create credentials using hte access id and key.
@@ -114,6 +111,7 @@ public class DynamoDb
 	 ************************************************/
 	
 	//	Updates the client for Lambda services (Does not have instance credentials).
+	@SuppressWarnings("deprecation")
 	public void setDbForLambda ()
 	{
 		//	Create a dynamo DB client.
@@ -125,6 +123,7 @@ public class DynamoDb
 	}
 	
 	//	Updates the client for EC2 using instance credentials.
+	@SuppressWarnings("deprecation")
 	public void setDbForEC2 ()
 	{	
 		//	Create a dynamo DB client.
@@ -133,6 +132,7 @@ public class DynamoDb
 	}
 	
 	//	Updates the client for EC2 by passing credentials.
+	@SuppressWarnings("deprecation")
 	public void setDbWithCredentials (String swfAccessId, String swfSecretKey)
 	{
 		//	Create credentials using hte access id and key.
@@ -147,6 +147,7 @@ public class DynamoDb
 	}
 	
 	//	Updates the client for EC2 by passing credentials and region.
+	@SuppressWarnings("deprecation")
 	public void setDbWithCredentials (String swfAccessId, String swfSecretKey, String region)
 	{
 		//	Create credentials using hte access id and key.
@@ -167,6 +168,7 @@ public class DynamoDb
 	 ************************************************/
 	
 	//	Updates the client for Lambda services (Does not have instance credentials).
+	@SuppressWarnings("deprecation")
 	public DynamoDB getDbForLambda ()
 	{
 		//	Create a dynamo DB client.
@@ -179,6 +181,7 @@ public class DynamoDb
 	}
 	
 	//	Updates the client for EC2 using instance credentials.
+	@SuppressWarnings("deprecation")
 	public DynamoDB getDbForEC2 ()
 	{
 		//	Create a dynamo DB client.
@@ -189,6 +192,7 @@ public class DynamoDb
 	}
 	
 	//	Updates the client for EC2 by passing credentials.
+	@SuppressWarnings("deprecation")
 	public DynamoDB getDbWithCredentials (String swfAccessId, String swfSecretKey)
 	{
 		//	Create credentials using hte access id and key.
@@ -205,6 +209,7 @@ public class DynamoDb
 	}
 	
 	//	Updates the client for EC2 by passing credentials and region.
+	@SuppressWarnings("deprecation")
 	public DynamoDB getDbWithCredentials (String swfAccessId, String swfSecretKey, String region)
 	{
 		//	Create credentials using hte access id and key.

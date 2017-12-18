@@ -5,39 +5,45 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<aws.version><%=awsVersion%></aws.version>
+		<aws.lambda.core.version>1.2.0</aws.lambda.core.version>
+		<cucumber.version>1.2.5</cucumber.version>
 		<apache.cxf.version>2.7.13</apache.cxf.version>
 		<apache.httpcomponents>4.5.2</apache.httpcomponents>
 		<jackson.json.version>1.9.13</jackson.json.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>
+		
+		<!-- For Cucumber Test cases -->
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-java</artifactId>
 			<version>1.1.8</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-		</dependency>
+
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-junit</artifactId>
 			<version>1.1.8</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- For Working with JSONObjects -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<!-- JUnit Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
@@ -58,6 +64,7 @@
 			<artifactId>commons-vfs2</artifactId>
 			<version>2.1</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -74,11 +81,7 @@
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20140107</version>
-		</dependency>
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -116,6 +119,7 @@
 		</dependency>
 		
 		<!-- Main Amazon SDK dependencies -->
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-core</artifactId>
@@ -127,6 +131,14 @@
 			<artifactId>aws-java-sdk-lambda</artifactId>
 			<version>${aws.version}</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-core -->
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-lambda-java-core</artifactId>
+			<version>${aws.lambda.core.version}</version>
+		</dependency>
+
 	
 		<% if(cloudformation) { %>
 		<dependency>
@@ -167,6 +179,15 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-sqs</artifactId>
 			<version>${aws.version}</version>
+		</dependency>
+		<% } %>
+
+		<% if(glue) { %>
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-glue -->
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-glue</artifactId>
+		    <version>${aws.version}</version>
 		</dependency>
 		<% } %>
 

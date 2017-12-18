@@ -1,0 +1,541 @@
+//	The branch that will be accessed on GitHub.
+branchName = '*/<%=branchName%>'
+
+//	The Jenkins job will be names according to the List View Name.
+listViewName = '<%=applicationName%>'
+
+//	The folder on S3 (inside a bucket) where artifacts should be stored. e.g. S3://tempjars/ReadingAndInterpretingFilesSkill
+s3FolderName = '<%=applicationName%>'
+
+// 	Repository on GitHub for ReadingAndInterpretingFilesSkill.
+SourceCodeUrl = '<%=gitRepoName%>'
+// 	Repository for Test cases.
+TestCases_Location = 'TestCases'
+TestCaseFolder = 'TestCase'
+DeterrentTestCaseFolder = 'Deterrent'
+
+/*	The class that should be executed for tests.
+ * 	Example Test* for Junits and RunTest for Acceptance.
+ */
+JunitTestClass = 'Test*'
+AcceptanceTestClass = 'RunTestAcceptance'
+
+credentialsId = '<%=credentialsId%>'
+pollSCMCron = 'H/2 * * * *'
+
+// 	Notification email and details.
+notificationEmailAddressList = '<%=notificationEmail%>'
+notificationEmailSubjectTemplate = '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!'
+notificationEmailContentTemplate = """\$PROJECT_NAME - Build # \$BUILD_NUMBER - \$BUILD_STATUS:
+										Check console output at \$BUILD_URL to view the results."""
+
+//	Get the build number from environment variables.
+buildNo = '$BUILD_NUMBER';
+
+/*	The following parameters are used for launching the stacks on CloudFormation.
+ * 
+ * 	StackDescriptor:
+ * 	The descriptor which has information about all the templates that need to be launched to execute your service.
+ * 	
+ * 	Stage:
+ * 	The stage you are launching your pipeline in.
+ * 
+ * 	BucketName:
+ * 	The bucket on S3 to be used to fetch the templates. e.g. tempjars or acceptance-artifacts.
+ * 
+ * 	Prefix and Suffix:
+ * 	Each template when launched, will have a prefix and suffix. e.g. heavywater-ClassifyDocumentsWorkPattern-1024
+ */
+ 
+StackDescriptor = 'stackDescriptor.json'
+Stage = '<%=acceptance%>'
+BucketName = 'tempjars'
+Prefix = '<%=prefix%>'
+Suffix = '<%=suffix%>'
+
+//	A commandline function that launches python scripts.
+PythonScripts = '/usr/bin/python Scripts/'
+
+//	Set this flag if your service is a lambda.
+Lambda = 'true'
+
+
+
+/************************************************************************************************************************
+ * 	STAGE: Commit Pipeline.																								*
+ * 	The project is built in the stage and Junit Tests are executed here. 												*
+ * 	Basic artifacts are stored here (usually in tempjars and hw-bucket).												*
+ ***********************************************************************************************************************/
+jobName = listViewName + '-commit'
+mavenJob(jobName) 
+{
+	//	Parameters for the job.
+	parameters 
+	{
+		stringParam('BRANCH_NAME', branchName, 'The branch name or tag that must be built')
+	}
+	
+	/* 	The SCM module allows you to specify the source code location for the project.  
+	 * 	It adds the scm attribute to the Job definition, which accepts any number of scm definitions.
+	 */
+	scm 
+	{
+		git
+		{
+			remote
+			{
+				url(SourceCodeUrl)
+				credentials(credentialsId)
+			}
+			//	Which branch to download.
+			branch(branchName)
+		}
+	}
+	
+	wrappers
+	{
+		colorizeOutput('xterm')
+	}
+	
+	deliveryPipelineConfiguration('commit', jobName)
+	blockOnDownstreamProjects()
+
+	// Triggered by push to github and SCM polling.
+	triggers
+	{
+		githubPush()
+		scm(pollSCMCron)
+	}
+	jdk('JDK_1.8')
+	
+	//	Environment variables that will be used for this job.
+	preBuildSteps
+	{
+		environmentVariables
+		{
+			env('FEATURE', s3FolderName)
+			env('MASTER_BUILD_ID',buildNo)
+			env('TESTS', JunitTestClass)
+		}
+	}
+	
+	//	These steps will be executed after build is completed.
+	postBuildSteps
+	{	
+		//	Run the basic commands Python script that moves all templates to hw-cft and tempjars bucket.
+		shell(PythonScripts + 'Commands.py basic $FEATURE lambda')
+		
+		
+	}
+	rootPOM('pom.xml')
+	
+	//	Run as a maven project with the parameters specified in goals.
+	goals('clean site verify cobertura:cobertura -Dtest=$TESTS -Dcobertura.report.format=xml')
+	
+	//	All reporting and persisting of artifacts after maven build, execute and tests are completed.
+	publishers 
+	{
+		//	Moving all artifacts from Jenkins workspace to the S3 bucket where artifacts must be stored.
+		s3('S3IAM')
+		{
+			entry('jars/','tempjars/$FEATURE','us-east-1')
+			{
+				storageClass('STANDARD')
+				noUploadOnFailure(true)
+			}
+		}
+		
+		extendedEmail(notificationEmailAddressList, notificationEmailSubjectTemplate, notificationEmailContentTemplate) 
+		{
+		  trigger('Always')
+		}
+
+		downstreamParameterized 
+		{
+			// If commit is successful, it triggers the provision-infra pipeline.
+			trigger (listViewName + '-provision-infra', 'SUCCESS')
+			{
+				currentBuild()
+			}
+		}
+	}
+}
+
+
+
+
+/************************************************************************************************************************
+ *	STAGE: Provision of Infrastructure pipeline.																		*
+ *	This stage provisions all resources on clou formation.																*
+ *	It launches all the 'stacks' for each project mentioned in the Descriptor file. 									*
+ ***********************************************************************************************************************/
+CftName = 'Master'
+jobName = listViewName + '-provision-infra'
+freeStyleJob(jobName)
+{
+	//	Parameters for the job.
+	parameters 
+	{
+		stringParam('BRANCH_NAME', branchName, 'The branch name or tag that must be built')
+		stringParam('MASTERCFT', CftName, 'The master CFT name')
+	}
+	
+	/* 	The SCM module allows you to specify the source code location for the project.  
+	 * 	It adds the scm attribute to the Job definition, which accepts any number of scm definitions.
+	 */
+	scm 
+	{
+		git
+		{
+			remote
+			{
+				url(SourceCodeUrl)
+				credentials(credentialsId)
+			}
+			//	Which branch to download.
+			branch(branchName)
+
+		}
+	}
+
+	wrappers
+	{
+		colorizeOutput('xterm')
+	}
+	
+	deliveryPipelineConfiguration('acceptance', jobName)
+	blockOnDownstreamProjects()
+	
+	steps
+	{
+		shell('echo '+buildNo)
+		
+		//	Upload the templates that are specified in the descriptor file.
+		shell(PythonScripts + 'uploadStackTemplates.py ' + StackDescriptor + ' ' + Stage + ' ' + BucketName + ' ' + Prefix + ' ' + Suffix)
+	}
+	
+	publishers 
+	{
+		extendedEmail(notificationEmailAddressList, notificationEmailSubjectTemplate, notificationEmailContentTemplate) 
+		{
+		  	trigger('Always')
+		}
+		
+		downstreamParameterized 
+		{
+			// 	Triggers validation job on success.
+			trigger (listViewName + '-validate-provisioned-infra', 'SUCCESS')
+			{
+				currentBuild()
+			}
+		}
+	}
+}
+
+
+
+
+
+/************************************************************************************************************************
+ *	STAGE: Valdate Provision Infra.																						*
+ *	This stage makes sure all templates were launched successfully.														*
+ ***********************************************************************************************************************/
+jobName = listViewName + '-validate-provisioned-infra'
+freeStyleJob(jobName)
+{
+	wrappers
+	{
+		colorizeOutput('xterm')
+	}
+	
+	deliveryPipelineConfiguration('acceptance', jobName)
+	blockOnDownstreamProjects()
+
+	steps
+	{
+		shell('echo '+jobName)
+	}
+
+	publishers 
+	{
+		extendedEmail(notificationEmailAddressList, notificationEmailSubjectTemplate, notificationEmailContentTemplate) 
+		{
+			trigger('Always')
+		}
+
+		downstreamParameterized 
+		{
+			trigger (listViewName + '-execute-acceptance-tests', 'SUCCESS')
+			{
+			  	currentBuild()
+			}
+		}
+	}
+}
+
+
+
+
+/************************************************************************************************************************
+ *	STAGE: Execution of acceptance tests.																				*
+ *	This stage calls the endpoint and executes test to make sure that the project works as expected.					*
+ *	Cucumber tests are run in this stage and results are persisted to S3.												*
+ *	Test cases should always be downloaded from he test-cases GitHub repository.										*
+ ***********************************************************************************************************************/
+jobName = listViewName + '-execute-acceptance-tests'
+mavenJob(jobName)
+{
+	//	Parameters for the job.
+	parameters 
+	{
+		stringParam('BRANCH_NAME', branchName, 'The branch name or tag that must be built')
+	}
+
+	/* 	The SCM module allows you to specify the source code location for the project.  
+	 * 	It adds the scm attribute to the Job definition, which accepts any number of scm definitions.
+	 */
+	scm 
+	{
+		// Git for source codes.
+		git
+		{
+			remote
+			{
+				url(SourceCodeUrl)
+				credentials(credentialsId)
+			}
+			//	Which branch to download.
+			branch(branchName)
+		}
+	}
+	
+	wrappers
+	{
+		colorizeOutput('xterm')
+	}
+	
+	deliveryPipelineConfiguration('acceptance', jobName)
+	blockOnDownstreamProjects()
+	jdk('JDK_1.8')
+	
+	/*	Before running the acceptance steps these commands will be executed.
+	 * 	Think of it as a set up of resources.
+	 */	
+	preBuildSteps
+	{
+		environmentVariables
+		{
+			env('FEATURE', s3FolderName)
+			env('MASTER_BUILD_ID',buildNo)
+			env('TESTS', AcceptanceTestClass)
+		}
+	}
+	
+	// Persist test results on S3.
+	postBuildSteps
+	{
+        shell('#!/bin/bash \n/usr/local/bin/aws s3 sync $WORKSPACE/src/test/resources/$FEATURE s3://commitacceptance-test-results/$FEATURE/')
+		shell('rm -r $WORKSPACE/src/test/resources/$FEATURE')
+    }
+
+	rootPOM('pom.xml')
+	
+	/*	Tests that need to be run.
+	 * 	RunTest.java is the script that glues the cucumber feature files to their respective source codes.
+	 */
+	goals('test -Dtest=$TESTS')
+	
+	publishers 
+	{
+		extendedEmail(notificationEmailAddressList, notificationEmailSubjectTemplate, notificationEmailContentTemplate) 
+		{
+		  trigger('Always')
+		}
+		
+		downstreamParameterized 
+		{
+			trigger (listViewName + '-certify-app-and-infra', 'SUCCESS')
+			{
+			  currentBuild()
+			}
+		}
+	}
+}
+
+
+
+
+/************************************************************************************************************************
+ * 	STAGE: Certification.																								*
+ * 	If all tests are succesful, it means that the artifacts are ready to be moved in to integration artifacts.			*
+ * 	If the test fail, this stage will not execute because the roject is not ready.										*
+ ***********************************************************************************************************************/
+jobName = listViewName + '-certify-app-and-infra'
+freeStyleJob(jobName)
+{
+	wrappers
+	{
+		colorizeOutput('xterm')
+	}
+	
+	deliveryPipelineConfiguration('acceptance', jobName)
+	blockOnDownstreamProjects()
+	
+	/* 	The SCM module allows you to specify the source code location for the project.  
+	 * 	It adds the scm attribute to the Job definition, which accepts any number of scm definitions.
+	 */
+	scm 
+	{
+		// Git for source codes.
+		git
+		{
+			remote
+			{
+				url(SourceCodeUrl)
+				credentials(credentialsId)
+			}
+			//	Which branch to download.
+			branch(branchName)
+		}
+	}
+	
+	environmentVariables
+	{
+		env('FEATURE', s3FolderName)
+	}
+		
+	// Persist data from tempjars to acceptance-artifacts on S3.
+	steps
+	{
+		shell('echo '+jobName)
+
+		//	Delete the previous contents from acceptance-artifacts' folder where you will certify the app.	
+		shell('/usr/local/bin/aws s3 rm s3://acceptance-artifacts/$FEATURE/ --recursive')
+		
+		//	Move artifacts from tempjars to the acceptance-artifacts bucket.
+		shell(PythonScripts + 'Commands.py move tempjars acceptance-artifacts $FEATURE')
+	}
+	
+	publishers 
+	{
+		extendedEmail(notificationEmailAddressList, notificationEmailSubjectTemplate, notificationEmailContentTemplate) 
+		{
+		  trigger('Always')
+		}
+		
+		downstreamParameterized 
+		{
+			trigger (listViewName + '-acceptance-env-tear-down', 'SUCCESS')
+			{
+			  currentBuild()
+			}
+		}
+	}
+}
+
+
+
+
+/************************************************************************************************************************
+ *	STAGE: Teardown from AWS CloudFormation.																			*
+ *	Once the all testing is complete and app has been certified, we need to delete the provisioned resources from AWS.	*
+ *	Every resource we has an associated cost with it and it should be provisioned unless it is being used.				*
+ ***********************************************************************************************************************/
+jobName = listViewName + '-acceptance-env-tear-down'
+freeStyleJob(jobName)
+{
+	//	Parameters for the job.
+	parameters 
+	{
+		stringParam('BRANCH_NAME', branchName, 'The branch name or tag that must be built')
+	}
+	
+	/* 	The SCM module allows you to specify the source code location for the project.  
+	 * 	It adds the scm attribute to the Job definition, which accepts any number of scm definitions.
+	 */
+	scm 
+	{
+		// Git for source codes.
+		git
+		{
+			remote
+			{
+				url(SourceCodeUrl)
+				credentials(credentialsId)
+			}
+			//	Which branch to download.
+			branch(branchName)
+		}	
+	}
+	
+	wrappers
+	{
+		colorizeOutput('xterm')
+	}
+	
+	deliveryPipelineConfiguration('acceptance', jobName)
+	
+	//	Run the script to delete all provisioned resources from CloudFormation.
+	steps
+	{
+		shell(PythonScripts + 'deleteUploadedStacks.py ' + StackDescriptor + ' ' + Prefix + ' ' + Suffix)
+	}
+	
+	publishers 
+	{
+		extendedEmail(notificationEmailAddressList, notificationEmailSubjectTemplate, notificationEmailContentTemplate) 
+		{
+		  trigger('Always')
+		}
+	}
+}
+
+
+/************************************************************************************************************************
+ * 	This script creates the view on Jenkins.																			*
+ * 	A view is created for each job created in this groovy script.														*
+ ***********************************************************************************************************************/
+
+listView(listViewName)
+{
+	description('All commit and acceptance jobs for ' + listViewName)
+	
+	//	For all jobs in this groovy script that matches the regular expression...  
+	jobs
+	{
+		regex(listViewName + '-.+')
+	}
+	
+	//	...we create the following columns.
+	columns 
+	{
+		status()
+		weather()
+		name()
+		lastSuccess()
+		lastFailure()
+		lastDuration()
+		buildButton()
+	}
+}
+
+
+/************************************************************************************************************************
+ * 	This script creates a pipeline view for each job.																	*
+ * 	The paramets affect how the pipeline will look when created.														*
+ ***********************************************************************************************************************/
+
+deliveryPipelineView(listViewName + '-pipeline')
+{
+	pipelineInstances(3)
+	showAggregatedPipeline(false)
+	columns(1)
+	sorting(Sorting.NONE)
+	updateInterval(2)
+	showAvatars(false)
+	showChangeLog(false)
+	pipelines 
+	{
+	  component('AutomateSkillWebservice Pipeline', listViewName + '-commit')
+	}
+}

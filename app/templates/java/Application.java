@@ -1,4 +1,4 @@
-package <%=packageName%>;
+package <%=packageName%>.<%=applicationName%>;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
@@ -33,6 +33,8 @@ public class <%=applicationName%> implements RequestHandler<Request, Response>
 	}
 
 	private String someFunction(String request){
-		//..Body
+		// TODO Auto-generated method stub
 	}
+
+	
 }

@@ -46,11 +46,11 @@ lambdaGenerator.prototype.askFor = function askFor() {
 	// Setup all the prompts
 	// 1. AWS Version  
 	// 2. Package Name
-	// 3. Base Name
-	// 4. AWS Services
-	// 5.
-	// 6.
-	// 7.
+	// 3. Application Name
+	// 4. Repo Name
+	// 5. AWS Services
+	// 6. Test Cases
+	// 7. CI/CD platform
 	// 8.
 	// 9.
 	// 10.
@@ -82,8 +82,22 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		{
 			type	: 'string',
 			name 	: 'baseName',
-			message : 'Enter name of the repo/folder you are in (will be the name of your jar):',
-			default	: 'OrganizationName-Repo'
+			message : 'Enter name of the folder/Service you are in (will be the name of your jar):',
+			default	: 'Service Name'
+		},
+
+		{
+			type	: 'string',
+			name 	: 'gitRepoName',
+			message : 'Enter Github Repo URL :',
+			default : 'https://github.com/'
+		},
+
+		{
+			type	: 'string',
+			name 	: 'branchName',
+			message : 'Enter the Branch Name :',
+			default : 'master'
 		},
 
 		{
@@ -119,23 +133,108 @@ lambdaGenerator.prototype.askFor = function askFor() {
 				{
 					name 	: 'CloudFormation',
 					value	: 'cloudformation'
+				},
+
+				{
+					name 	: 'Glue',
+					value	: 'glue'
 				}
 			]
+		},
+
+		{
+			type	: 'string',
+			name 	: 'stage',
+			message : 'Choose the testing scenarios:',
+			choices : [
+				{
+					name 	: 'Acceptance',
+					value	: 'acceptance'
+				},
+
+				{
+					name    : 'Integration',
+					value	: 'integration'
+				}
+			]
+		},
+
+		{
+			type	: 'string',
+			name 	: 'continuosIntegration',
+			message : 'Enter name of CI/CD platform:',
+			choices : [
+				{
+					name 	: 'Jenkins',
+					value	: 'jenkins'
+				}
+			]
+		},
+
+		{
+			type	: 'string',
+			name 	: 'credentialsId',
+			message : 'Enter your aws credentials :',
+			default : 'uuid'
+		},
+
+		{
+			type	: 'string',
+			name 	: 'notificationEmail',
+			message : 'Enter the email you want to send notifications to :',
+			default : 'notifications@email.com'
+		},
+
+		{
+			type	: 'string',
+			name 	: 'prefix',
+			message : 'Enter the suggested prefix name seeing during launch of CFT:',
+			default : 'heavywater'
+		},
+
+		{
+			type	: 'string',
+			name 	: 'suffix',
+			message : 'Enter the suggested suffix name seeing during launch of CFT:',
+			default : 'mohsiur'
 		}
+
+
 	];
 
 	this.prompt(prompts, function(props){
-		this.awsVersion 		= props.awsVersion;
-		this.packageName 		= props.packageName;
-		this.baseName 			= props.baseName;
-	//	this.basePath			= props.basePath;
-		this.awsServices 		= props.awsServices;
-		this.applicationName 	= props.applicationName;
-	//	this.folderName			= props.folderName;
+		this.awsVersion 			= props.awsVersion;
+		this.packageName 			= props.packageName;
+		this.baseName 				= props.baseName;
+		this.awsServices 			= props.awsServices;
+		this.applicationName 		= props.applicationName;
+
+		this.stage					= props.stage;
+		this.continuosIntegration 	= props.continuosIntegration;
+
+		this.gitRepoName			= props.gitRepoName;
+		this.branchName				= props.branchName;
+
+		this.credentialsId			= props.credentialsId;
+		this.notificationEmail 		= props.notificationEmail;
+		this.prefix					= props.prefix;
+		this.suffix					= props.suffix;
 
 		var hasAwsServices = function(awsServicesStarter){
 			return props.awsServices.indexOf(awsServicesStarter) !== -1;
 		};
+
+		var hasStage = function(stageStarter){
+			return props.stage.indexOf(stageStarter) !== -1;
+		};
+		var hasContinuosIntegration = function(continuosIntegrationStarter){
+			return props.continuosIntegration.indexOf(continuosIntegrationStarter) !== -1;
+		};
+
+		this.acceptance 	= hasStage('acceptance');
+		this.integration 	= hasStage('integration');
+		
+		this.jenkins 		= hasContinuosIntegration('jenkins');
 
 		this.s3 			= hasAwsServices('s3');
 		this.sqs 			= hasAwsServices('sqs');
@@ -143,6 +242,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		this.sns 			= hasAwsServices('sns');
 		this.dynamodb 		= hasAwsServices('dynamodb');
 		this.cloudformation = hasAwsServices('cloudformation');
+		this.glue			= hasAwsServices('glue');
 
 		cb();
 	}.bind(this));
@@ -159,6 +259,7 @@ lambdaGenerator.prototype.app = function app() {
 	//var packageFolder 		= this.packageName.replace(/\./g, '/');
 	//var mainFolder			= this.basePath + '/' + this.baseName + '/';
 	var srcDir 				= this.baseName +'/src/main/java/' + basePageFolder;
+
 	mkdirp(srcDir);
 
 	// Set pom.xml file
@@ -166,7 +267,7 @@ lambdaGenerator.prototype.app = function app() {
 	// Set Application.java
 	var applicationDir = srcDir + '/' + applicationName
 	mkdirp(applicationDir)
-	this.template('java/Application.java', applicationDir + "/Application.java");
+	this.template('java/Application.java', applicationDir + "/" applicationName + ".java");
 
 	if(this.awsServices){
 		var awsServicesDir		= srcDir + '/utils/AmazonWebServices'; 
@@ -177,7 +278,7 @@ lambdaGenerator.prototype.app = function app() {
 		if(this.dynamodb){
 			var operationsDir = srcDir + '/utils/Operations';
 			mkdirp(operationsDir);
-			this.template('java/DynamoDB.java', awsServicesDir+'/DynamoDB.java');
+			this.template('java/DynamoDb.java', awsServicesDir+'/DynamoDb.java');
 			this.template('java/RegexOperations.java', operationsDir+'/RegexOperations.java');
 		}
 		if(this.cloudformation) this.template('java/CloudFormation.java', awsServicesDir+'/CloudFormation.java');
@@ -189,6 +290,25 @@ lambdaGenerator.prototype.app = function app() {
 	this.template('java/Response.java', lambdaServiceDir+'/Response.java');
 	this.template('java/Request.java', lambdaServiceDir+'/Request.java');
 
+	var srcTestDir = this.baseName + "/src/test/java/" + basePageFolder;
+	mkdirp(srcTestDir);
+
+	if(this.acceptance){
+		this.template('tests/AcceptanceCaseSteps.java', srcTestDir+"/acceptance/steps/CaseSteps.java");
+		this.template('tests/RunAcceptanceTest.java', srcTestDir+"/runner/RunAcceptanceTest.java");
+		this.template('tests/TestCase.feature', this.baseName+"/src/test/resources/cucumber/TestCaseAcceptance.feature");
+		this.template('jenkins/acceptance.dsld', applicationName+"Acceptance.dsld");
+	}
+
+	if(this.integration){
+		this.template('tests/IntegrationCaseSteps.java', srcTestDir+"/integration/steps/CaseSteps.java");
+		this.template('tests/RunIntegrationTest.java', srcTestDir+"/runner/RunIntegrationTest.java");
+		this.template('tests/TestCase.feature', this.baseName+"/src/test/resources/cucumber/TestCaseIntegration.feature");
+		this.template('jenkins/integration.dsld', applicationName+"Integration.dsld");
+	}
+
+	console.log("A generic template has been created, please add the following files to launch into AWS, \n"
+				+ "CloudFormation template, Scripts folder");
 	//this.config.set('packageName', this.packageName);
     //this.config.set('packageFolder', packageFolder);
 };
