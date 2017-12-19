@@ -62,7 +62,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 			type 	: 'string',
 			name 	: 'awsVersion',
 			message	: 'Enter AWS Version to use:',
-			default	: '1.11.247' 
+			default	: '1.11.250' 
 		},
 
 		{
@@ -74,7 +74,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 
 		{
 			type 	: 'checkbox',
-			name 	: 'componentType',
+			name 	: 'component',
 			message : 'Choose the type of component you are building :',
 			choices : [
 				{
