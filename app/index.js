@@ -73,6 +73,29 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		},
 
 		{
+			type 	: 'checkbox',
+			name 	: 'componentType',
+			message : 'Choose the type of component you are building :',
+			choices : [
+				{
+					name 	: 'WebService',
+					value	: 'webservice'
+				},
+
+				{
+					name    : 'WorkFlow',
+					value	: 'workflow'
+				},
+
+				{
+					name 	: 'WorkPattern',
+					value 	: 'workpattern'
+				}
+			]
+
+		}
+
+		{
 			type	: 'string',
 			name 	: 'applicationName',
 			message : 'Enter name of the application:',
@@ -199,13 +222,13 @@ lambdaGenerator.prototype.askFor = function askFor() {
 			default : 'mohsiur'
 		}
 
-
 	];
 
 	this.prompt(prompts, function(props){
 		this.awsVersion 			= props.awsVersion;
 		this.packageName 			= props.packageName;
 		this.baseName 				= props.baseName;
+		this.component 				= props.component;
 		this.awsServices 			= props.awsServices;
 		this.applicationName 		= props.applicationName;
 
@@ -220,6 +243,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 		this.prefix					= props.prefix;
 		this.suffix					= props.suffix;
 
+
 		var hasAwsServices = function(awsServicesStarter){
 			return props.awsServices.indexOf(awsServicesStarter) !== -1;
 		};
@@ -231,8 +255,16 @@ lambdaGenerator.prototype.askFor = function askFor() {
 			return props.continuosIntegration.indexOf(continuosIntegrationStarter) !== -1;
 		};
 
-		this.acceptance 			= hasStage('acceptance');
-		this.integration 			= hasStage('integration');
+		var hasComponent = function(componentStarter){
+			return props.component.indexOf(componentStarter) !== -1;
+		};
+
+		this.webservice 	= hasComponent('webservice');
+		this.workpattern 	= hasComponent('workpattern');
+		this.workflow 		= hasComponent('workflow');
+
+		this.acceptance 	= hasStage('acceptance');
+		this.integration 	= hasStage('integration');
 
 		this.jenkins 		= hasContinuosIntegration('jenkins');
 
@@ -309,6 +341,17 @@ lambdaGenerator.prototype.app = function app() {
 		this.template('stackDescriptor.json', this.baseName + "/integrationStackDescriptor.json");
 	}
 
+	if(this.webservice){
+		this.template('Readme/Webservice.md', this.baseName + "/README.md");
+	}
+
+	if(this.workflow){
+		this.template('Readme/Workflow.md', this.baseName + "/README.md");
+	}
+
+	if(this.workpattern){
+		this.template('Readme/Workpattern.md', this.baseName + "/README.md");
+	}
 	console.log("A generic template has been created, please add the following files to launch into AWS, \n"
 				+ "CloudFormation template, Scripts folder");
 	//this.config.set('packageName', this.packageName);

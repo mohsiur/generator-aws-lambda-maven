@@ -536,6 +536,6 @@ deliveryPipelineView(listViewName + '-pipeline')
 	showChangeLog(false)
 	pipelines 
 	{
-	  component('AutomateSkillWebservice Pipeline', listViewName + '-commit')
+	  component('<%=applicationName%> Pipeline', listViewName + '-commit')
 	}
 }
