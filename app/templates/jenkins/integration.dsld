@@ -453,6 +453,6 @@ deliveryPipelineView(listViewName + '-pipeline')
 	showChangeLog(false)
 	pipelines 
 	{
-	  component('AutomateSkillWebservice Integration ', listViewName + '-LauncherSeed')
+	  component('<%=applicationName%> Integration ', listViewName + '-LauncherSeed')
 	}
 }
