@@ -2,10 +2,10 @@
 branchName = '*/<%=branchName%>'
 
 //	The Jenkins job will be names according to the List View Name.
-listViewName = '<%=applicationName%>'
+listViewName = '<%=applicationName%>Webservice'
 
 //	The folder on S3 (inside a bucket) where artifacts should be stored. e.g. S3://tempjars/ReadingAndInterpretingFilesSkill
-s3FolderName = '<%=applicationName%>'
+s3FolderName = '<%=applicationName%>Webservice'
 
 // 	Repository on GitHub for ReadingAndInterpretingFilesSkill.
 SourceCodeUrl = '<%=gitRepoName%>'
@@ -536,6 +536,6 @@ deliveryPipelineView(listViewName + '-pipeline')
 	showChangeLog(false)
 	pipelines 
 	{
-	  component('<%=applicationName%> Pipeline', listViewName + '-commit')
+	  component('<%=applicationName%>Webservice Pipeline', listViewName + '-commit')
 	}
 }

@@ -328,7 +328,7 @@ lambdaGenerator.prototype.app = function app() {
 		this.template('tests/AcceptanceCaseSteps.java', srcTestDir+"/acceptance/steps/CaseSteps.java");
 		this.template('tests/RunAcceptanceTest.java', srcTestDir+"/runner/RunAcceptanceTest.java");
 		this.template('tests/TestCase.feature', this.baseName+"/src/test/resources/cucumber/TestCaseAcceptance.feature");
-		this.template('jenkins/acceptance.dsld', this.baseName + "/" + applicationName+"Acceptance.dsld");
+		this.template('jenkins/webserviceacceptance.dsld', this.baseName + "/" + applicationName+"Acceptance.dsld");
 		this.template('stackDescriptor.json', this.baseName + "/stackDescriptor.json");
 	}
 
