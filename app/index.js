@@ -92,8 +92,7 @@ lambdaGenerator.prototype.askFor = function askFor() {
 					value 	: 'workpattern'
 				}
 			]
-
-		}
+		},
 
 		{
 			type	: 'string',
