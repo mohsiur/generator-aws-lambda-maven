@@ -74,7 +74,10 @@ module.exports = class extends Generator {
         type: 'list',
         name: 'lambdaInvoker',
         message: 'How do you want to invoke the lambda?',
-        list: ['apigateway', 's3', 'scheduled']
+        choices: ['apigateway', 's3', 'scheduled'],
+        filter: function(val) {
+          return val.toLowerCase();
+        }
       },
 
       {
