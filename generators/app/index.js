@@ -95,11 +95,13 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    this.fs.copyTpl(
-      this.templatePath('dummyfile.txt'),
-      this.destinationPath('dummyfile.txt'),
-      this.props
-    );
+    if (this.props.lambdaInvoker === 'apigateway') {
+      this.fs.copyTpl(
+        this.templatePath('dummyfile.txt'),
+        this.destinationPath('dummyfile.txt'),
+        this.props
+      );
+    }
     this.fs.copyTpl(
       this.templatePath('dummyfile2.txt'),
       this.destinationPath('src/main/dummfile2.txt'),

@@ -18,6 +18,7 @@ describe('generator-aws-lambda-maven:app', () => {
 
   it('file info', () => {
     assert.fileContent('dummyfile.txt', '1.11.257');
+    assert.fileContent('dummyfile.txt', 'apigateway');
     assert.fileContent('src/main/dummfile2.txt', 'testApp');
     assert.fileContent('src/main/dummyfile3.txt', 'apigateway');
   });

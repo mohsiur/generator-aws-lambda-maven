@@ -1,0 +1,3 @@
+<%=packageName%> 
+
+This is test dummy2
