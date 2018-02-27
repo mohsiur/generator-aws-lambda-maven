@@ -1,3 +1,0 @@
-<%= awsVersion %>
-<%= lambdaInvoker %>
-This is a dummyFile

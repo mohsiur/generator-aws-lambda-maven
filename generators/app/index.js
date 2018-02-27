@@ -9,30 +9,18 @@ module.exports = class extends Generator {
     this.log(
       yosay(
         chalk.green(
-          '\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' +
-            '\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' +
-            '\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' +
-            '\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' +
-            '\n%%%%%%%%%%%%%@@@@@@@@%%%%%%%&%*.   .(%@%%%%%%%%%%' +
-            '\n%%%%%%%%%%%%%%///////(&%%@(   , .   ..  %%%%%%%%%' +
-            '\n%%%%%%%%%%%%%%////////#%%.    ,,,,.,     .&%%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%%(////%  ..  , .   ,,..* ,&%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%%%////(,*  *,   *    , *  (%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%%%#//(,.  .       .       *%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%%#////(.. ,       ,       #%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%(/////(..,*. ,.,.  . ,  *(%%%%%%' +
-            '\n%%%%%%%%%%%%%%%%(////((/(#...   .. ,   .*%%%%%%%%' +
-            '\n%%%%%%%%%%%%%%%/////(%%///(#, ,,,    ./%%%%%%%%%%' +
-            '\n%%%%%%%%%%%%%%/////#%%%#////(@%%%%%%%%%%%%%%%%%%%' +
-            '\n%%%%%%%%%%%%%/////#%%%%%(////#%%%%%%%%%%%%%%%%%%%' +
-            '\n%%%%%%%%%%%#/////%%%%%%%%(////%%%%@@%%%%%%%%%%%%%' +
-            '\n%%%%%%%%%@#/////%%%%%%%%%%////(#(//(%%%%%%%%%%%%%' +
-            '\n%%%%%%%%&(/////%%%%%%%%%%%#/////////%%%%%%%%%%%%%' +
-            '\n%%%%%%%%(////(%%%%%%%%%%%%%#//////(#%%%%%%%%%%%%%' +
-            '\n%%%%%%%((((((%%%%%%%%%%%%%%%((%%%%%%%%%%%%%%%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%' +
-            '\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%' +
+          '     .++++++-            \n' +
+            '     .///++++.           \n' +
+            '         :+++/`          \n' +
+            '          /+++/`         \n' +
+            '         -/++++/         \n' +
+            '       `:+++++++:        \n' +
+            '      ./+++/-++++-       \n' +
+            '     -++++:` -++++-      \n' +
+            '   `/+++/.    :++++.     \n' +
+            '  -/+++:`      :+++/--:/`\n' +
+            '`:+++/.        /+++++++:\n' +
+            '.....`          `//:-.`` ' +
             chalk.yellow(
               "\n Welcome to AWS Lambda Generator for Maven\n\n Let's get started\n\n"
             )
@@ -74,10 +62,62 @@ module.exports = class extends Generator {
         type: 'list',
         name: 'lambdaInvoker',
         message: 'How do you want to invoke the lambda?',
-        choices: ['apigateway', 's3', 'scheduled'],
+        choices: [
+          {
+            name: 'APIGateway'
+          },
+          {
+            name: 'Default'
+          },
+          {
+            name: 'S3',
+            disabled: 'Not available yet'
+          },
+
+          {
+            name: 'SNS',
+            disabled: 'Not available yet'
+          },
+          {
+            name: 'DynamoDb',
+            disabled: 'Not available yet'
+          }
+        ],
         filter: function(val) {
           return val.toLowerCase();
         }
+      },
+
+      {
+        type: 'checkbox',
+        name: 'libraries',
+        message: 'Choose the libraries you want to integrate:',
+        choices: [
+          {
+            name: 'S3',
+            value: 's3'
+          },
+
+          {
+            name: 'SQS',
+            value: 'sqs'
+          },
+
+          {
+            name: 'DynamoDB',
+            value: 'dynamodb'
+          },
+
+          {
+            name: 'CloudFormation',
+            value: 'cloudformation'
+          },
+
+          {
+            name: 'Glue',
+            value: 'glue'
+          }
+        ]
       },
 
       {
@@ -90,32 +130,106 @@ module.exports = class extends Generator {
 
     return this.prompt(prompts).then(props => {
       // To access props later use this.props.someAnswer;
+      var hasAwsServices = function(awsServicesStarter) {
+        return props.libraries.indexOf(awsServicesStarter) !== -1;
+      };
+
       this.props = props;
+      // Set up the props for the invoker service
+      this.props.invokerAPIGateway = this.props.lambdaInvoker;
+      this.props.invokerS3 = this.props.lambdaInvoker;
+      this.props.invokerDynamoDb = this.props.lambdaInvoker;
+      this.props.invokerSNS = this.props.lambdaInvoker;
+      this.props.invokerScheduled = this.props.lambdaInvoker;
+      this.props.invokerDefault = this.props.lambdaInvoker;
+
+      // Set up the props for all the library services
+      this.props.s3 = hasAwsServices('s3');
+      this.props.sqs = hasAwsServices('sqs');
+      this.props.dynamodb = hasAwsServices('dynamodb');
+      this.props.cloudformation = hasAwsServices('cloudformation');
+      this.props.glue = hasAwsServices('glue');
     });
   }
 
   writing() {
-    if (this.props.lambdaInvoker === 'apigateway') {
+    var packagePath = this.props.packageName.split('.').join('/');
+    var folderName = this.props.projectName;
+    var amazonWebServicePath =
+      folderName + '/src/main/java/' + packagePath + '/utils/AmazonWebServices/';
+    var mainPath = folderName + '/src/main/java/' + packagePath + '/';
+    var lambdaUtilsPath =
+      folderName + '/src/main/java/' + packagePath + '/utils/LambdaUtils/';
+    /**
+     * Create files if libraries for the following are wanted
+     * S3             - S3.java
+     * DynamoDB       - DynamoDB.java
+     * SQS            - SQS.java
+     * CloudFormation - CloudFormation.java
+     * Glue           - Glue.java
+     */
+    if (this.props.s3) {
       this.fs.copyTpl(
-        this.templatePath('dummyfile.txt'),
-        this.destinationPath('dummyfile.txt'),
+        this.templatePath('AmazonServices/S3.java'),
+        this.destinationPath(amazonWebServicePath + 'S3.java'),
+        this.props
+      );
+    }
+
+    if (this.props.dynamodb) {
+      this.fs.copyTpl(
+        this.templatePath('AmazonServices/DynamoDb.java'),
+        this.destinationPath(amazonWebServicePath + 'DynamoDb.java'),
+        this.props
+      );
+    }
+
+    if (this.props.sqs) {
+      this.fs.copyTpl(
+        this.templatePath('AmazonServices/SQS.java'),
+        this.destinationPath(amazonWebServicePath + 'SQS.java'),
+        this.props
+      );
+    }
+
+    if (this.props.cloudformation) {
+      this.fs.copyTpl(
+        this.templatePath('AmazonServices/CloudFormation.java'),
+        this.destinationPath(amazonWebServicePath + 'CloudFormation.java'),
+        this.props
+      );
+    }
+
+    if (this.props.glue) {
+      this.fs.copyTpl(
+        this.templatePath('AmazonServices/Glue.java'),
+        this.destinationPath(amazonWebServicePath + 'Glue.java'),
+        this.props
+      );
+    }
+
+    if (this.props.invokerAPIGateway === 'apigateway') {
+      this.fs.copyTpl(
+        this.templatePath('LambdaUtils/Request.java'),
+        this.destinationPath(lambdaUtilsPath + 'Request.java'),
+        this.props
+      );
+      this.fs.copyTpl(
+        this.templatePath('LambdaUtils/Response.java'),
+        this.destinationPath(lambdaUtilsPath + 'Response.java'),
         this.props
       );
     }
     this.fs.copyTpl(
-      this.templatePath('dummyfile2.txt'),
-      this.destinationPath('src/main/dummfile2.txt'),
+      this.templatePath('main.java'),
+      this.destinationPath(mainPath + this.props.className + '.java'),
       this.props
     );
 
     this.fs.copyTpl(
-      this.templatePath('dummyfile3.txt'),
-      this.destinationPath('src/main/dummyfile3.txt'),
+      this.templatePath('pom.xml'),
+      this.destinationPath('pom.xml'),
       this.props
     );
-  }
-
-  install() {
-    this.installDependencies();
   }
 };
