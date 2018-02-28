@@ -36,13 +36,6 @@ module.exports = class extends Generator {
         message: 'Enter the name of your project(same as Github Project)',
         default: 'Project Name'
       },
-      // Application Name
-      {
-        type: 'input',
-        name: 'applicationName',
-        message: 'Enter the name of your application',
-        default: 'Some Application'
-      },
       // Package Name
       {
         type: 'input',
@@ -88,6 +81,7 @@ module.exports = class extends Generator {
         }
       },
 
+      // Libraries
       {
         type: 'checkbox',
         name: 'libraries',
@@ -120,6 +114,7 @@ module.exports = class extends Generator {
         ]
       },
 
+      // AWS Version
       {
         type: 'input',
         name: 'awsVersion',

@@ -6,7 +6,7 @@ Since there is sensitive information regarding this, you will still have to crea
 
 ## Installation
 
-`Install [npm](https://nodejs.org/en/) on your local machine`
+Install [npm](https://nodejs.org/en/) on your local machine
 
 After installation run the following commands in your terminal
 
@@ -15,9 +15,11 @@ After installation run the following commands in your terminal
 
 ## Creating a new project
 
-To create a new project, first be in the directory of all your projects then run the following command and follow the respective instructions as it appears on your command line. Detailed info on each repo is given in the wiki.
+To create a new project, first be in the directory of all your projects then run the following command and follow the respective instructions as it appears on your command line.
 
 `yo aws-lambda-maven`
+
+
 
 ## To-Do List
 
