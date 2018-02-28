@@ -11,26 +11,34 @@ describe('generator-aws-lambda-maven:app', () => {
       packageName: 'com.app.myapp',
       className: 'Test',
       lambdaInvoker: 'default',
-      libraries: 's3'
+      libraries: 's3',
+      bucketName: 'lambda-artifacts',
+      stage: 'dev',
+      stackName: 'MainDefault-Lambda',
+      appilcationName: 'MainDefaultApp'
     });
   });
 
   it('creates files for default tests', () => {
-    assert.file(['pom.xml', 'MainDefault/src/main/java/com/app/myapp/Test.java']);
+    assert.file([
+      'pom.xml',
+      'MainDefault/src/main/java/com/app/myapp/Test.java',
+      'README.md'
+    ]);
   });
 
   it('file info for default invoker', () => {
     assert.fileContent(
       'MainDefault/src/main/java/com/app/myapp/Test.java',
-      'package com.app.myapp.Test'
-    );
-    assert.fileContent(
-      'MainDefault/src/main/java/com/app/myapp/Test.java',
-      'public class Test'
-    );
-    assert.fileContent(
-      'MainDefault/src/main/java/com/app/myapp/Test.java',
+      'package com.app.myapp.Test',
+      'public class Test',
       'public Response handleRequest(Object input, Context context)'
+    );
+    assert.fileContent(
+      'README.md',
+      'any given Object',
+      'MainDefault-Lambda',
+      'MainDefaultApp'
     );
   });
 });

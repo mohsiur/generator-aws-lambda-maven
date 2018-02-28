@@ -9,7 +9,10 @@ describe('generator-aws-lambda-maven:app', () => {
       awsVersion: `1.11.257`,
       projectName: 'SQSTest',
       packageName: 'com.app.myapp',
-      libraries: 'sqs'
+      libraries: 'sqs',
+      bucketName: 'lambda-artifacts',
+      stage: 'dev',
+      stackName: 'MainDefault-Lambda'
     });
   });
 

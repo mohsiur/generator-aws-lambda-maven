@@ -43,13 +43,31 @@ module.exports = class extends Generator {
         message: 'Enter default package name:',
         default: 'com.myapp'
       },
+      // Application Name
+      {
+        type: 'input',
+        name: 'applicationName',
+        message: 'Enter the name of your Application/Lambda function',
+        default: 'Application'
+      },
+
+      // Description
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Enter a brief description of your lambda',
+        default:
+          'Nulla sit ut in culpa pariatur adipisicing quis qui amet est dolor est minim ea.'
+      },
+
       // Class Name
       {
         type: 'input',
         name: 'className',
         message: 'Enter the name of your class',
-        default: 'Application'
+        default: 'Class'
       },
+
       // Invoker Type
       {
         type: 'list',
@@ -57,10 +75,11 @@ module.exports = class extends Generator {
         message: 'How do you want to invoke the lambda?',
         choices: [
           {
-            name: 'APIGateway'
+            name: 'Default'
           },
           {
-            name: 'Default'
+            name: 'APIGateway',
+            disabled: 'Not available yet'
           },
           {
             name: 'S3',
@@ -73,6 +92,10 @@ module.exports = class extends Generator {
           },
           {
             name: 'DynamoDb',
+            disabled: 'Not available yet'
+          },
+          {
+            name: 'Scheduled',
             disabled: 'Not available yet'
           }
         ],
@@ -114,6 +137,26 @@ module.exports = class extends Generator {
         ]
       },
 
+      {
+        type: 'input',
+        name: 'bucketName',
+        message: 'Enter the name of the Bucket your artifacts will be stored in',
+        default: 'lambda-artifacts'
+      },
+
+      {
+        type: 'input',
+        name: 'stage',
+        message: 'Enter the name of the stage you are creating this lambda for',
+        default: 'dev'
+      },
+
+      {
+        type: 'input',
+        name: 'stackName',
+        message: 'Enter the name of your CloudFormation stack that will be deployed',
+        default: 'StackName'
+      },
       // AWS Version
       {
         type: 'input',
@@ -215,6 +258,13 @@ module.exports = class extends Generator {
         this.props
       );
     }
+
+    this.fs.copyTpl(
+      this.templatePath('README.md'),
+      this.destinationPath('README.md'),
+      this.props
+    );
+
     this.fs.copyTpl(
       this.templatePath('main.java'),
       this.destinationPath(mainPath + this.props.className + '.java'),

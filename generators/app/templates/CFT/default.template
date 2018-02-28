@@ -1,0 +1,110 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "This template configures Lambda function, <%=projectName%>",
+  "Parameters": {
+    "BucketName": {
+      "Type": "String",
+      "Default": ""
+    },
+    "Environment": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Resources": {
+    "<%=applicationName%>": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Description": "<%=description%>",
+        "Handler": "<%=packageName%>.<%=className%>::handleRequest",
+        "Role": {
+          "Fn::GetAtt": [
+            "LambdaExecutionRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "S3Bucket": {
+            "Ref": "BucketName"
+          },
+          "S3Key": "<%=applicationName%>/<%=projectName%>-0.0.1-SNAPSHOT.jar"
+        },
+        "Environment": {
+          "Variables": {
+            "Environment": {
+              "Ref": "Environment"
+            },
+            "Role": {
+              "Ref": "LambdaExecutionRole"
+            }
+          }
+        },
+        "Runtime": "java8",
+        "Timeout": "300",
+        "MemorySize": "1024"
+      }
+    },
+    "LambdaExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "*",
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "<%=applicationName%>InvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "<%=applicationName%>",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com"
+      }
+    }
+  },
+  "Outputs": {
+    "<%=applicationName%>": {
+      "Value": {
+        "Ref": "<%=applicationName%>"
+      },
+      "Description": "Lambda Function Name"
+    },
+    "LambdaExecutionRole": {
+      "Value": {
+        "Ref": "LambdaExecutionRole"
+      },
+      "Description": "Lambda Execution Role"
+    }
+  }
+}

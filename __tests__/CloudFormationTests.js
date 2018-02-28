@@ -9,14 +9,19 @@ describe('generator-aws-lambda-maven:app', () => {
       awsVersion: `1.11.257`,
       projectName: 'CFTest',
       packageName: 'com.app.myapp',
-      libraries: 'cloudformation'
+      libraries: 'cloudformation',
+      bucketName: 'lambda-artifacts',
+      stage: 'dev',
+      stackName: 'MainDefault-Lambda',
+      appilcationName: 'MainDefaultApp'
     });
   });
 
   it('creates files for cloudformation tests', () => {
     assert.file([
       'pom.xml',
-      'CFTest/src/main/java/com/app/myapp/utils/AmazonWebServices/CloudFormation.java'
+      'CFTest/src/main/java/com/app/myapp/utils/AmazonWebServices/CloudFormation.java',
+      'MainDefaultApp.template'
     ]);
   });
 

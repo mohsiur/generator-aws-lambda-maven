@@ -9,7 +9,10 @@ describe('generator-aws-lambda-maven:app', () => {
       awsVersion: `1.11.257`,
       projectName: 'DynamoDBTest',
       packageName: 'com.app.myapp',
-      libraries: 'dynamodb'
+      libraries: 'dynamodb',
+      bucketName: 'lambda-artifacts',
+      stage: 'dev',
+      stackName: 'MainDefault-Lambda'
     });
   });
 
