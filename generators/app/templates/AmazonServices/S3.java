@@ -1,5 +1,11 @@
 package <%=packageName%>.utils.AmazonWebServices;
 
+/**
+ * AWS S3 Library
+ * @author Kartik Reddy - https://github.com/
+ * @contributors Mohsiur Rahman - https://github.com/mohsiur
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
