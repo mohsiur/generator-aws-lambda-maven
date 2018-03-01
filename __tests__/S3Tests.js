@@ -19,13 +19,13 @@ describe('generator-aws-lambda-maven:app', () => {
 
   it('creates files for s3 tests', () => {
     assert.file([
-      'pom.xml',
+      'S3Test/pom.xml',
       'S3Test/src/main/java/com/app/myapp/utils/AmazonWebServices/S3.java'
     ]);
   });
 
   it('file info for s3 libraries', () => {
-    assert.fileContent('pom.xml', 'aws-java-sdk-s3');
+    assert.fileContent('S3Test/pom.xml', 'aws-java-sdk-s3');
     assert.fileContent(
       'S3Test/src/main/java/com/app/myapp/utils/AmazonWebServices/S3.java',
       'package com.app.myapp.utils.AmazonWebServices'

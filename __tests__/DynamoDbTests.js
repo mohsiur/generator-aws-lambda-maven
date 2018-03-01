@@ -18,13 +18,13 @@ describe('generator-aws-lambda-maven:app', () => {
 
   it('creates files for dynamodb tests', () => {
     assert.file([
-      'pom.xml',
+      'DynamoDBTest/pom.xml',
       'DynamoDBTest/src/main/java/com/app/myapp/utils/AmazonWebServices/DynamoDb.java'
     ]);
   });
 
   it('file info for dynamodb libraries', () => {
-    assert.fileContent('pom.xml', 'aws-java-sdk-dynamodb');
+    assert.fileContent('DynamoDBTest/pom.xml', 'aws-java-sdk-dynamodb');
     assert.fileContent(
       'DynamoDBTest/src/main/java/com/app/myapp/utils/AmazonWebServices/DynamoDb.java',
       'package com.app.myapp.utils.AmazonWebServices'

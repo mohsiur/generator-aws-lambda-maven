@@ -1,8 +1,6 @@
-# generator-aws-lambda-maven
+# generator-aws-lambda-maven [![Build Status](https://travis-ci.org/mohsiur/generator-aws-lambda-maven.svg?branch=fresh-generator)](https://travis-ci.org/mohsiur/generator-aws-lambda-maven)
 
-A Yeoman Generator Building a Lambda function with POJO request in maven for webservices. This service will help you build a new Lambda Handler, by choosing your dependencies, creating your respective DSLDs and as well as tests using cucumber. 
-
-Since there is sensitive information regarding this, you will still have to create folders for CFT and Scripts to take advantage of this
+A Yeoman Generator Building a Lambda function which can be invoked by any type of Object, future invokers will be added.
 
 ## Installation
 
@@ -19,12 +17,26 @@ To create a new project, first be in the directory of all your projects then run
 
 `yo aws-lambda-maven`
 
+## Lambda Invokers
 
+The following AWS Resources can invoke the Lambda when deployed.
+
+- [x] Default (Any String or Java object)
+- [] API Gateway
+- [] SNS
+- [] DynamoDB
+- [] Scheduler
+- [] S3
 
 ## To-Do List
 
-* Ability to create full structure of a project.
-* Add test cases so future users can modify this template.
-* Using private repos so information is not exposed.
-* Add more AWS libraries to feature more flexibility
-* Add flexibility for other components.
+* Add integration with other Lambda invokers
+
+## Contributors
+
+[Kartik Reddy](https://github.com/)
+[Mohsiur Rahman](https://github.com/mohsiur)
+
+## Contributing
+
+Contributions and feedback are welcome! Proposals and pull requests will be considered and responded to. For more information, see the [CONTRIBUTING](CONTRIBUTING.md) file.

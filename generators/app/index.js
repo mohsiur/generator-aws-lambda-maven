@@ -79,7 +79,7 @@ module.exports = class extends Generator {
           },
           {
             name: 'APIGateway',
-            disabled: 'Not available yet'
+            disable: 'Not available yet'
           },
           {
             name: 'S3',
@@ -173,13 +173,35 @@ module.exports = class extends Generator {
       };
 
       this.props = props;
+      this.props.invokerAPIGateway = false;
+      this.props.invokerS3 = false;
+      this.props.invokerDynamoDb = false;
+      this.props.invokerSNS = false;
+      this.props.invokerScheduled = false;
+      this.props.invokerDefault = false;
       // Set up the props for the invoker service
-      this.props.invokerAPIGateway = this.props.lambdaInvoker;
-      this.props.invokerS3 = this.props.lambdaInvoker;
-      this.props.invokerDynamoDb = this.props.lambdaInvoker;
-      this.props.invokerSNS = this.props.lambdaInvoker;
-      this.props.invokerScheduled = this.props.lambdaInvoker;
-      this.props.invokerDefault = this.props.lambdaInvoker;
+      switch (this.props.lambdaInvoker) {
+        case 'apigateway':
+          this.props.invokerAPIGateway = true;
+          break;
+        case 's3':
+          this.props.invokerS3 = true;
+          break;
+        case 'dynamodb':
+          this.props.invokerDynamoDb = true;
+          break;
+        case 'sns':
+          this.props.invokerSNS = true;
+          break;
+        case 'scheduled':
+          this.props.invokerScheduled = true;
+          break;
+        case 'default':
+          this.props.invokerDefault = true;
+          break;
+        default:
+          this.props.invokerDefault = true;
+      }
 
       // Set up the props for all the library services
       this.props.s3 = hasAwsServices('s3');
@@ -246,7 +268,7 @@ module.exports = class extends Generator {
       );
     }
 
-    if (this.props.invokerAPIGateway === 'apigateway') {
+    if (this.props.invokerAPIGateway) {
       this.fs.copyTpl(
         this.templatePath('LambdaUtils/Request.java'),
         this.destinationPath(lambdaUtilsPath + 'Request.java'),
@@ -261,7 +283,7 @@ module.exports = class extends Generator {
 
     this.fs.copyTpl(
       this.templatePath('README.md'),
-      this.destinationPath('README.md'),
+      this.destinationPath(folderName + '/README.md'),
       this.props
     );
 
@@ -273,7 +295,13 @@ module.exports = class extends Generator {
 
     this.fs.copyTpl(
       this.templatePath('pom.xml'),
-      this.destinationPath('pom.xml'),
+      this.destinationPath(folderName + '/pom.xml'),
+      this.props
+    );
+
+    this.fs.copyTpl(
+      this.templatePath('CFT/default.template'),
+      this.destinationPath(folderName + '/' + this.props.applicationName + '.template'),
       this.props
     );
   }

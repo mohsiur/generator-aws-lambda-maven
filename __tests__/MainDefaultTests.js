@@ -21,21 +21,21 @@ describe('generator-aws-lambda-maven:app', () => {
 
   it('creates files for default tests', () => {
     assert.file([
-      'pom.xml',
+      'MainDefault/pom.xml',
       'MainDefault/src/main/java/com/app/myapp/Test.java',
-      'README.md'
+      'MainDefault/README.md'
     ]);
   });
 
   it('file info for default invoker', () => {
     assert.fileContent(
       'MainDefault/src/main/java/com/app/myapp/Test.java',
-      'package com.app.myapp.Test',
+      'package com.app.myapp',
       'public class Test',
       'public Response handleRequest(Object input, Context context)'
     );
     assert.fileContent(
-      'README.md',
+      'MainDefault/README.md',
       'any given Object',
       'MainDefault-Lambda',
       'MainDefaultApp'

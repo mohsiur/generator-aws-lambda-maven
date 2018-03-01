@@ -13,20 +13,20 @@ describe('generator-aws-lambda-maven:app', () => {
       bucketName: 'lambda-artifacts',
       stage: 'dev',
       stackName: 'MainDefault-Lambda',
-      appilcationName: 'MainDefaultApp'
+      applicationName: 'MainDefaultApp'
     });
   });
 
   it('creates files for cloudformation tests', () => {
     assert.file([
-      'pom.xml',
+      'CFTest/pom.xml',
       'CFTest/src/main/java/com/app/myapp/utils/AmazonWebServices/CloudFormation.java',
-      'MainDefaultApp.template'
+      'CFTest/MainDefaultApp.template'
     ]);
   });
 
   it('file info for cloudformation libraries', () => {
-    assert.fileContent('pom.xml', 'aws-java-sdk-cloudformation');
+    assert.fileContent('CFTest/pom.xml', 'aws-java-sdk-cloudformation');
     assert.fileContent(
       'CFTest/src/main/java/com/app/myapp/utils/AmazonWebServices/CloudFormation.java',
       'package com.app.myapp.utils.AmazonWebServices'

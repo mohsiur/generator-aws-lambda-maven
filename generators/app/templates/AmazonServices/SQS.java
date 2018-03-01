@@ -1,5 +1,11 @@
 package <%=packageName%>.utils.AmazonWebServices;
 
+/**
+ * AWS SQS Library
+ * @author Kartik Reddy - https://github.com/
+ * @contributors Mohsiur Rahman - https://github.com/mohsiur
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

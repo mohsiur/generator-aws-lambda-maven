@@ -1,34 +1,40 @@
 package <%=packageName%>.utils.AmazonWebServices;
 
+/**
+ * 	AWS Cloudformation Library.		
+ * 
+ * 	@author Kartik
+ *  @contributors Mohsiur
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.InstanceProfileCredentialsProvider;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DeleteItemOutcome;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.TableCollection;
 import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.KeyType;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.PutItemResult;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
+import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemResult;
 
-import solutions.heavywater.utils.Operations.RegexOperations;
+import com.comcast.videoplatform.utils.Operations.RegexOperations;
 
 
 public class DynamoDb 
@@ -38,8 +44,7 @@ public class DynamoDb
 	 * 	table	-->	Table name.
 	 * 	item	-->	Entry in the table.
 	 */
-	private AmazonDynamoDBClient dbClient = null;
-	private DynamoDB dynamoDb = null;
+	private AmazonDynamoDB dynamoDb = null;
 	private Table table = null;
 	private Item item = null;
 	
@@ -48,181 +53,10 @@ public class DynamoDb
 	 */
 	private String tableName;
 	
-	@SuppressWarnings("deprecation")
 	public DynamoDb ()
 	{
 		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient();
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	/*	 
-	 * 	Parameterized default constructor that accepts the region to build credentials.
-	 */
-	@SuppressWarnings("deprecation")
-	public DynamoDb (String region)
-	{
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient();
-		
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(region)));
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	/*	 
-	 * 	Parameterized default constructor that accepts the access id and key to build credentials.
-	 */
-	@SuppressWarnings("deprecation")
-	public DynamoDb (String swfAccessId, String swfSecretKey)
-	{
-		//	Create credentials using hte access id and key.
-		AWSCredentials aws = new BasicAWSCredentials(swfAccessId, swfSecretKey);
-		
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(aws);
-		
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(System.getenv("Region"))));
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	/*	 
-	 * 	Parameterized default constructor that accepts the access id and key along with region to build credentials.
-	 */
-	
-	@SuppressWarnings("deprecation")
-	public DynamoDb (String swfAccessId, String swfSecretKey, String region)
-	{
-		//	Create credentials using hte access id and key.
-		AWSCredentials aws = new BasicAWSCredentials(swfAccessId, swfSecretKey);
-			
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(aws);
-		
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(region)));
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	
-	/************************************************
-	 * 	Setting Credentials for Amazon DynamoDB.	*
-	 ************************************************/
-	
-	//	Updates the client for Lambda services (Does not have instance credentials).
-	@SuppressWarnings("deprecation")
-	public void setDbForLambda ()
-	{
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient();
-			
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(System.getenv("Region"))));
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	//	Updates the client for EC2 using instance credentials.
-	@SuppressWarnings("deprecation")
-	public void setDbForEC2 ()
-	{	
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(new InstanceProfileCredentialsProvider(false));
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	//	Updates the client for EC2 by passing credentials.
-	@SuppressWarnings("deprecation")
-	public void setDbWithCredentials (String swfAccessId, String swfSecretKey)
-	{
-		//	Create credentials using hte access id and key.
-		AWSCredentials aws = new BasicAWSCredentials(swfAccessId, swfSecretKey);
-				
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(aws);
-			
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(System.getenv("Region"))));
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	//	Updates the client for EC2 by passing credentials and region.
-	@SuppressWarnings("deprecation")
-	public void setDbWithCredentials (String swfAccessId, String swfSecretKey, String region)
-	{
-		//	Create credentials using hte access id and key.
-		AWSCredentials aws = new BasicAWSCredentials(swfAccessId, swfSecretKey);
-				
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(aws);
-			
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(region)));
-		dynamoDb = new DynamoDB(dbClient);
-	}
-	
-	
-	/************************************************
-	 * 	Getting Credentials for Amazon DB Client.	*
-	 * @return 										*			
-	 ************************************************/
-	
-	//	Updates the client for Lambda services (Does not have instance credentials).
-	@SuppressWarnings("deprecation")
-	public DynamoDB getDbForLambda ()
-	{
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient();
-			
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(System.getenv("Region"))));
-		dynamoDb = new DynamoDB(dbClient);
-		return dynamoDb;
-	}
-	
-	//	Updates the client for EC2 using instance credentials.
-	@SuppressWarnings("deprecation")
-	public DynamoDB getDbForEC2 ()
-	{
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(new InstanceProfileCredentialsProvider(false));
-		dynamoDb = new DynamoDB(dbClient);
-		
-		return dynamoDb;
-	}
-	
-	//	Updates the client for EC2 by passing credentials.
-	@SuppressWarnings("deprecation")
-	public DynamoDB getDbWithCredentials (String swfAccessId, String swfSecretKey)
-	{
-		//	Create credentials using hte access id and key.
-		AWSCredentials aws = new BasicAWSCredentials(swfAccessId, swfSecretKey);
-				
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(aws);
-			
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(System.getenv("Region"))));
-		dynamoDb = new DynamoDB(dbClient);
-		
-		return dynamoDb;
-	}
-	
-	//	Updates the client for EC2 by passing credentials and region.
-	@SuppressWarnings("deprecation")
-	public DynamoDB getDbWithCredentials (String swfAccessId, String swfSecretKey, String region)
-	{
-		//	Create credentials using hte access id and key.
-		AWSCredentials aws = new BasicAWSCredentials(swfAccessId, swfSecretKey);
-				
-		//	Create a dynamo DB client.
-		dbClient = new AmazonDynamoDBClient(aws);
-			
-		//	Set the region for the client and get the region dynamically as an envorinment variable. 
-		dbClient.setRegion(Region.getRegion(Regions.valueOf(region)));
-		dynamoDb = new DynamoDB(dbClient);
-		
-		return dynamoDb;
+		dynamoDb = AmazonDynamoDBClientBuilder.defaultClient();
 	}
 	
 	
@@ -230,26 +64,93 @@ public class DynamoDb
 	 * 	Table.										*		
 	 ************************************************/
 	
-	//	Select a table.
-	public void setTable (String tableName)
-	{
-		this.tableName = tableName;
-		this.table = dynamoDb.getTable(tableName);
+	
+	// Create a table
+	public void createTable(String tableName, Map<String, String> tableKeySchema, Map<String, String> tableAttributes, Long readCapacityUnits, Long writeCapacityUnits ) {
+		CreateTableRequest createTableRequest = new CreateTableRequest();
+		// Set the table Name
+		createTableRequest.setTableName(tableName);
+		
+		// Set the Key Schema for the tables
+		List<KeySchemaElement> keySchema = setKeySchemaElement(tableKeySchema);
+		createTableRequest.setKeySchema(keySchema);
+		
+		// Set the Attribute Definitions for the tables
+		List<AttributeDefinition> attributeDefinitions = setAttributeDefinitions(tableAttributes);
+		createTableRequest.setAttributeDefinitions(attributeDefinitions);
+		
+		// Set the Provision Throughput
+		ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput(readCapacityUnits,writeCapacityUnits);
+		createTableRequest.setProvisionedThroughput(provisionedThroughput);
+		
+		// Create The Table
+		dynamoDb.createTable(createTableRequest);
 	}
 	
-	//	Get the table.
-	public Table getTable (String tableName)
-	{
-		return dynamoDb.getTable(tableName);
+	// Delete the Table Name
+	public boolean deleteTable(String tableName) {
+		// Delete the table
+		try {
+			dynamoDb.deleteTable(tableName);
+			return true;
+		}
+		catch(Exception e) {
+			return false;
+		}
 	}
-	
-	//	Get the table.
-	public void updateTable ()
-	{
-		table.putItem(this.item);
+	/**
+	 * Set a list of Attribute Definitions
+	 * @param tableAttributes
+	 * @return
+	 */
+	private List<AttributeDefinition> setAttributeDefinitions(Map<String, String> tableAttributes) {
+		List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
+		ScalarAttributeType attributeType = null;
+		
+		for(String attribute : tableAttributes.keySet()) {
+			// Set the Attribute Name
+			AttributeDefinition attributeDefinition = new AttributeDefinition();
+			attributeDefinition.setAttributeName(attribute);
+			
+			// Set the Attribute Type
+			if(tableAttributes.get(attribute) == "S")
+				attributeType = ScalarAttributeType.S;
+			else if(tableAttributes.get(attribute) == "B")
+				attributeType = ScalarAttributeType.B;
+			else if(tableAttributes.get(attribute) == "N")
+				attributeType = ScalarAttributeType.N;
+			attributeDefinition.setAttributeType(attributeType);
+			
+			// Add to List
+			attributeDefinitions.add(attributeDefinition);
+		}
+		return attributeDefinitions;
 	}
-	
-	
+
+	/**
+	 * Set a List of Key Schema Elements
+	 * @param tableKeySchema
+	 * @return
+	 */
+	private List<KeySchemaElement> setKeySchemaElement(Map<String, String> tableKeySchema) {
+		List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
+		
+		for(String attributeName : tableKeySchema.keySet()) {
+			KeySchemaElement keySchemaElement = new KeySchemaElement();
+			if(tableKeySchema.get(attributeName) == "HASH") {
+				keySchemaElement.setAttributeName(attributeName);
+				keySchemaElement.setKeyType(KeyType.HASH);
+			}
+			else if(tableKeySchema.get(attributeName) == "RANGE") {
+				keySchemaElement.setAttributeName(attributeName);
+				keySchemaElement.setKeyType(KeyType.RANGE);
+			}
+			keySchema.add(keySchemaElement);
+		}
+		
+		return keySchema;
+	}
+
 	/************************************************
 	 * 	Item.										*		
 	 ************************************************/
@@ -342,14 +243,14 @@ public class DynamoDb
 	//	Put item into the table.
 	public PutItemResult putItem (String tableName, Map<String, AttributeValue> item)
 	{
-		return dbClient.putItem(tableName, item);
+		return dynamoDb.putItem(tableName, item);
 	}
 	
 	//	Put item into the table.
 	public void putItems (String tableName, List<Map<String, AttributeValue>> items)
 	{
 		for(Map<String, AttributeValue> item : items)
-			dbClient.putItem(tableName, item);
+			dynamoDb.putItem(tableName, item);
 	}
 	
 	//	Return a list of items.
@@ -369,7 +270,7 @@ public class DynamoDb
 				scanRequest = new ScanRequest()
 				.withTableName(tableName);
 			
-			ScanResult result = dbClient.scan(scanRequest);
+			ScanResult result = dynamoDb.scan(scanRequest);
 		 	
 			items.addAll(result.getItems());
 			
@@ -390,9 +291,14 @@ public class DynamoDb
 		return this.tableName;
 	}
 	
-	public TableCollection<ListTablesResult> listTableNames()
+	public List<String> listTableNames(String tablePrefix)
 	{
-		return dynamoDb.listTables();
+		try {
+			return dynamoDb.listTables(tablePrefix).getTableNames();
+		}
+		catch(Exception e) {
+			return null;
+		}
 	}
 	
 	/************************************************

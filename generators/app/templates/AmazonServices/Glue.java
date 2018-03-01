@@ -1,5 +1,11 @@
 package <%=packageName%>.utils.AmazonWebServices;
 
+/**
+ * AWS Glue Lobrary.
+ *
+ * @author mohsiur
+ */
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,11 +33,6 @@ import com.amazonaws.services.glue.model.SerDeInfo;
 import com.amazonaws.services.glue.model.StorageDescriptor;
 import com.amazonaws.services.glue.model.TableInput;
 
-/**
- * Glue Library to use it's features
- * @author mohsiur
- *
- */
 public class Glue {
 
 	private final static Integer MAX_NUMBER = 1000;

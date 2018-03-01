@@ -1,6 +1,6 @@
 # <%=projectName%>
 
-The following is a lambda for <%=applicationName%> and is invoked by <% if(invokerAPIGateway) { %> API Gateway <% } %> <% if(invokerDefault) { %> any given Object <% } %>
+The following is a lambda for <%=applicationName%> and is invoked by <%if(invokerAPIGateway){%>API Gateway<%}%><%if(invokerDefault){%>any given Object<%}%>
 
 ## Pre-requisites
 

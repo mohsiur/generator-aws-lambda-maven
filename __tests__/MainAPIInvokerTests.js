@@ -20,7 +20,7 @@ describe('generator-aws-lambda-maven:app', () => {
 
   it('creates files for API Invoker tests', () => {
     assert.file([
-      'pom.xml',
+      'MainAPIGateWayInvoker/pom.xml',
       'MainAPIGateWayInvoker/src/main/java/com/app/myapp/Test.java',
       'MainAPIGateWayInvoker/src/main/java/com/app/myapp/utils/LambdaUtils/Request.java',
       'MainAPIGateWayInvoker/src/main/java/com/app/myapp/utils/LambdaUtils/Request.java'
@@ -33,7 +33,7 @@ describe('generator-aws-lambda-maven:app', () => {
       'import com.app.myapp.utils.LambdaUtils.Request;',
       'import com.app.myapp.utils.LambdaUtils.Response;',
       'public class Test implements RequestHandler<Request, Response>',
-      'package com.app.myapp.Test',
+      'package com.app.myapp',
       'public Response handleRequest(Request input, Context context)'
     );
   });

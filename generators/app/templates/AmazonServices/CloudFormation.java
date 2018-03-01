@@ -1,5 +1,11 @@
 package <%=packageName%>.utils.AmazonWebServices;
 
+/**
+ * 	AWS Cloudformation Library.		
+ * 
+ * 	@author Kartik
+ */
+
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
