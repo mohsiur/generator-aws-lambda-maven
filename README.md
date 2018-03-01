@@ -35,8 +35,8 @@ The following AWS Resources can invoke the Lambda when deployed.
 
 ## Contributors
 
-* [Kartik Reddy](https://github.com/)
 * [Mohsiur Rahman](https://github.com/mohsiur)
+* [Kartik Reddy](https://github.com/)
 
 ## Contributing
 
