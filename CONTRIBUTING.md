@@ -11,7 +11,7 @@ an issue to discuss it.
 
 ### Making the request
 
-1. Create a fork of the GoFormation repository [(quick link)](https://github.com/mohsiur/generator-aws-lambda-maven#fork-destination-box)
+1. Create a fork of the generator-aws-lambda-maven repository [(quick link)](https://github.com/mohsiur/generator-aws-lambda-maven#fork-destination-box)
 2. Commit your changes to your fork
 3. Create a new pull request [(quick link)](https://github.com/mohsiur/generator-aws-lambda-maven/compare)  
 
