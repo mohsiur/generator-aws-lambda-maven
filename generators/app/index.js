@@ -79,7 +79,7 @@ module.exports = class extends Generator {
           },
           {
             name: 'APIGateway',
-            disable: 'Not available yet'
+            disabled: 'Not available yet'
           },
           {
             name: 'S3',

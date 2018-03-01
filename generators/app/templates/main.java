@@ -2,13 +2,13 @@ package <%=packageName%>;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 <% if(s3) { %>import <%=packageName%>.utils.AmazonWebServices.S3;<% } %>
 <% if(dynamodb) { %>import <%=packageName%>.utils.AmazonWebServices.DynamoDb;<% } %>
 <% if(sqs) { %>import <%=packageName%>.utils.AmazonWebServices.SQS;<% } %>
 <% if(cloudformation) { %>import <%=packageName%>.utils.AmazonWebServices.CloudFormation;<% } %>
 <% if(glue) { %>import <%=packageName%>.utils.AmazonWebServices.Glue;<% } %>
-<% if(invokerAPIGateway) { %>import <%=packageName%>.utils.LambdaUtils.Request;
+<% if(invokerAPIGateway) { %>import com.amazonaws.services.lambda.runtime.RequestHandler;
+import <%=packageName%>.utils.LambdaUtils.Request;
 import <%=packageName%>.utils.LambdaUtils.Response;<% } %>
 
 <% if(invokerAPIGateway) { %>public class <%=className%> implements RequestHandler<Request, Response><% } %>
@@ -26,7 +26,7 @@ import <%=packageName%>.utils.LambdaUtils.Response;<% } %>
 	<% if(glue) { %>// Initiate Glue Client
 	private static Glue glue = new Glue();<% } %>
 	<% if(invokerAPIGateway) { %>public Response handleRequest(Request input, Context context) <% } %>
-	<% if(invokerDefault) { %>public Response handleRequest(Object input, Context context) <% } %>{
+	<% if(invokerDefault) { %>public String handleRequest(Object input, Context context) <% } %>{
 		
 		String request = input.getRequest();
 		// Initiate the Logger
