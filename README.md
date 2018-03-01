@@ -1,4 +1,6 @@
-# generator-aws-lambda-maven [![Build Status](https://travis-ci.org/mohsiur/generator-aws-lambda-maven.svg?branch=fresh-generator)](https://travis-ci.org/mohsiur/generator-aws-lambda-maven)
+# generator-aws-lambda-maven 
+
+[![Build Status](https://travis-ci.org/mohsiur/generator-aws-lambda-maven.svg?branch=fresh-generator)](https://travis-ci.org/mohsiur/generator-aws-lambda-maven)
 
 A Yeoman Generator Building a Lambda function which can be invoked by any type of Object, future invokers will be added.
 
@@ -22,15 +24,16 @@ To create a new project, first be in the directory of all your projects then run
 The following AWS Resources can invoke the Lambda when deployed.
 
 - [x] Default (Any String or Java object)
-- [] API Gateway
-- [] SNS
-- [] DynamoDB
-- [] Scheduler
-- [] S3
+- [ ] API Gateway
+- [ ] SNS
+- [ ] DynamoDB
+- [ ] Scheduler
+- [ ] S3
 
 ## To-Do List
 
 * Add integration with other Lambda invokers
+* Add more libraries
 
 ## Contributors
 
