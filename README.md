@@ -8,8 +8,8 @@ Install [npm](https://nodejs.org/en/) on your local machine
 
 After installation run the following commands in your terminal
 
-`npm install -g yo`
-`npm install -g generator-aws-lambda-maven`
+- `npm install -g yo`
+- `npm install -g generator-aws-lambda-maven`
 
 ## Creating a new project
 
@@ -30,13 +30,13 @@ The following AWS Resources can invoke the Lambda when deployed.
 
 ## To-Do List
 
-* Add integration with other Lambda invokers
-* Add more libraries
+- Add integration with other Lambda invokers
+- Add more libraries
 
 ## Contributors
 
-[Kartik Reddy](https://github.com/)
-[Mohsiur Rahman](https://github.com/mohsiur)
+* [Kartik Reddy](https://github.com/)
+* [Mohsiur Rahman](https://github.com/mohsiur)
 
 ## Contributing
 
