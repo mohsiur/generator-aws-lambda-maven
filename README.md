@@ -1,4 +1,4 @@
-# generator-aws-lambda-maven [![Build Status](https://travis-ci.org/mohsiur/generator-aws-lambda-maven.svg?branch=master)](https://travis-ci.org/mohsiur/generator-aws-lambda-maven)
+# generator-aws-lambda-maven [![Build Status](https://travis-ci.org/mohsiur/generator-aws-lambda-maven.svg?branch=master)](https://travis-ci.org/mohsiur/generator-aws-lambda-maven) [![Open Source Helpers](https://www.codetriage.com/mohsiur/generator-aws-lambda-maven/badges/users.svg)](https://www.codetriage.com/mohsiur/generator-aws-lambda-maven)
 
 A Yeoman Generator Building a Lambda function which can be invoked by any type of Object, future invokers will be added.
 

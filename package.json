@@ -1,6 +1,6 @@
 {
   "name": "generator-aws-lambda-maven",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description":
     "A generator which creates a Lambda function in Java to be imported as a maven project",
   "homepage": "https://github.com/mohsiur/generator-aws-lambda-maven",
