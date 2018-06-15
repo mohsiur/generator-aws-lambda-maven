@@ -22,7 +22,7 @@ import <%=packageName%>.utils.LambdaUtils.Response;<% } %>
 	<% if(sqs) { %>// Initiate S3 Client
 	private static SQS sqs = new SQS();<% } %>
 	<% if(cloudformation) { %>// Initiate Cloudformation Client
-	private static CloudFormation cft = new Cloudformation();<% } %>
+	private static CloudFormation cft = new CloudFormation();<% } %>
 	<% if(glue) { %>// Initiate Glue Client
 	private static Glue glue = new Glue();<% } %>
 	<% if(invokerAPIGateway) { %>public Response handleRequest(Request input, Context context) <% } %>
