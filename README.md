@@ -22,7 +22,7 @@ To create a new project, first be in the directory of all your projects then run
 The following AWS Resources can invoke the Lambda when deployed.
 
 - [x] Default (Any String or Java object)
-- [ ] API Gateway
+- [x] API Gateway
 - [ ] SNS
 - [ ] DynamoDB
 - [ ] Scheduler
