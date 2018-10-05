@@ -12,7 +12,6 @@ describe('generator-aws-lambda-maven:app', () => {
       libraries: 'cloudformation',
       bucketName: 'lambda-artifacts',
       stage: 'dev',
-      stackName: 'MainDefault-Lambda',
       applicationName: 'MainDefaultApp',
       className: 'CFTestClass',
       lambdaInvoker: 'default'
@@ -23,7 +22,6 @@ describe('generator-aws-lambda-maven:app', () => {
     assert.file([
       'CFTest/pom.xml',
       'CFTest/src/main/java/com/app/myapp/utils/AmazonWebServices/CloudFormation.java',
-      'CFTest/MainDefaultApp.template',
       'CFTest/src/main/java/com/app/myapp/CFTestClass.java'
     ]);
   });
