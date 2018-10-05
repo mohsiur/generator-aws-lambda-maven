@@ -23,10 +23,11 @@ The following AWS Resources can invoke the Lambda when deployed.
 
 - [x] Default (Any String or Java object)
 - [x] API Gateway
-- [ ] SNS
+- [x] SNS
 - [ ] DynamoDB
 - [ ] Scheduler
 - [ ] S3
+- [ ] SQS
 
 ## To-Do List
 
