@@ -81,12 +81,10 @@ module.exports = class extends Generator {
             name: 'APIGateway'
           },
           {
-            name: 'S3',
-            disabled: 'Not available yet'
+            name: 'SNS'
           },
-
           {
-            name: 'SNS',
+            name: 'S3',
             disabled: 'Not available yet'
           },
           {
@@ -148,13 +146,6 @@ module.exports = class extends Generator {
         name: 'stage',
         message: 'Enter the name of the stage you are creating this lambda for',
         default: 'dev'
-      },
-
-      {
-        type: 'input',
-        name: 'stackName',
-        message: 'Enter the name of your CloudFormation stack that will be deployed',
-        default: 'StackName'
       },
       // AWS Version
       {
@@ -295,12 +286,6 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath('pom.xml'),
       this.destinationPath(folderName + '/pom.xml'),
-      this.props
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('CFT/default.template'),
-      this.destinationPath(folderName + '/' + this.props.applicationName + '.template'),
       this.props
     );
   }
