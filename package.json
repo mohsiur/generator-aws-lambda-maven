@@ -1,17 +1,23 @@
 {
   "name": "generator-aws-lambda-maven",
-  "version": "2.0.3",
-  "description":
-    "A generator which creates a Lambda function in Java to be imported as a maven project",
+  "version": "2.1.0",
+  "description": "A generator which creates a Lambda function in Java to be imported as a maven project",
   "homepage": "https://github.com/mohsiur/generator-aws-lambda-maven",
   "author": {
     "name": "mohsiur",
     "email": "mohsiurr@buffalo.edu",
     "url": ""
   },
-  "files": ["generators"],
+  "files": [
+    "generators"
+  ],
   "main": "generators/index.js",
-  "keywords": ["aws", "lambda", "maven", "yeoman-generator"],
+  "keywords": [
+    "aws",
+    "lambda",
+    "maven",
+    "yeoman-generator"
+  ],
   "devDependencies": {
     "yeoman-test": "^1.7.0",
     "yeoman-assert": "^3.1.0",
@@ -41,11 +47,20 @@
     "test": "jest"
   },
   "lint-staged": {
-    "*.js": ["eslint --fix", "git add"],
-    "*.json": ["prettier --write", "git add"]
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.json": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "eslintConfig": {
-    "extends": ["xo", "prettier"],
+    "extends": [
+      "xo",
+      "prettier"
+    ],
     "env": {
       "jest": true,
       "node": true
@@ -59,7 +74,9 @@
         }
       ]
     },
-    "plugins": ["prettier"]
+    "plugins": [
+      "prettier"
+    ]
   },
   "repository": "https://github.com/mohsiur/generator-aws-lambda-maven.git",
   "license": "MIT"
