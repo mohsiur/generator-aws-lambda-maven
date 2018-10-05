@@ -12,8 +12,7 @@ describe('generator-aws-lambda-maven:app', () => {
       libraries: 's3',
       className: 'Application',
       bucketName: 'lambda-artifacts',
-      stage: 'dev',
-      stackName: 'MainDefault-Lambda'
+      stage: 'dev'
     });
   });
 

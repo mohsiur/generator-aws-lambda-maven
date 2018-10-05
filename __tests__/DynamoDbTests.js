@@ -11,8 +11,7 @@ describe('generator-aws-lambda-maven:app', () => {
       packageName: 'com.app.myapp',
       libraries: 'dynamodb',
       bucketName: 'lambda-artifacts',
-      stage: 'dev',
-      stackName: 'MainDefault-Lambda'
+      stage: 'dev'
     });
   });
 
